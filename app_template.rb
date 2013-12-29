@@ -67,6 +67,9 @@ if yes?('Use MongoDB?')
   gem 'mongoid'
 end
 
+# reload ruby
+run 'rvm reload'
+
 # bundle install
 run 'bundle install'
 
@@ -92,6 +95,7 @@ application  <<-GENERATORS
   end
 GENERATORS
 
+run 'rm -rf config/initializers/secret_token.rb'
 file 'config/initializers/secret_token.rb', <<-FILE
 #{@app_name.classify}::Application.config.secret_key_base = ENV['SECRET_KEY_BASE'] || 'sometoken'
 FILE
@@ -101,6 +105,20 @@ run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml
 
 # create git ignore
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
+
+# Setting Rspec
+run 'rails generate rspec:install'
+run "echo '--color --drb -f d' > .rspec"
+
+insert_into_file 'spec/spec_helper.rb',
+%(config.before :suite do
+    DatabaseRewinder.clean_all
+  end
+
+  config.after :each do
+    DatabaseRewinder.clean
+  end
+), after: 'RSpec.configure do |config|'
 
 # git init
 git :init
