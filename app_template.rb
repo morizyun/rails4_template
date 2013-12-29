@@ -64,7 +64,12 @@ end
 CODE
 
 if yes?('Use MongoDB?')
-  gem 'mongoid'
+append_file 'Gemfile', <<-CODE
+gem 'mongoid'
+gem 'bson'
+gem 'bson_ext'
+CODE
+
 end
 
 # bundle install
