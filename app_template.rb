@@ -1,6 +1,7 @@
 # アプリ名の取得
 @app_name = app_name
-@ruby_version = ask('Ruby version?')
+@ruby_version = ask('Ruby version? Enter[2.1.0]')
+@ruby_version = '2.1.0' unless @ruby_version
 
 # clean file
 run 'rm README.rdoc'
