@@ -1,12 +1,13 @@
 # アプリ名の取得
 @app_name = app_name
+@ruby_version = ask('Ruby version?')
 
 # clean file
 run 'rm README.rdoc'
 
 # add to Gemfile
 append_file 'Gemfile', <<-CODE
-ruby '2.1.0'
+ruby '#{@ruby_version}'
 
 # 定数管理
 gem 'rails_config'
@@ -68,7 +69,7 @@ if yes?('Use MongoDB?')
 end
 
 # reload ruby
-run 'rvm reload'
+run "rvm use #{@ruby_version}"
 
 # bundle install
 run 'bundle install'
