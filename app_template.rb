@@ -19,8 +19,8 @@ gem 'therubyracer', platforms: :ruby
 # CSS Support
 gem 'less-rails'
 
-# Use unicorn as the app server
-gem 'unicorn'
+# App Server
+gem 'puma'
 
 # Presenter Layer
 gem 'draper'
@@ -39,9 +39,6 @@ gem 'rails_config'
 
 # プロセス管理
 gem 'foreman'
-
-# params 引数化
-gem 'action_args'
 
 # HTML5バリデーター
 gem 'html5_validators'
@@ -183,9 +180,9 @@ gsub_file 'config/database.yml', /APPNAME/, @app_name
 run "createuser #{@app_name} -s"
 run 'bundle exec rake RAILS_ENV=development db:create'
 
-# Unicorn
-run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.rb -P config/'
-run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
+# Puma(App Server)
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/after_initialize.rb -P config/initializers/'
+run "echo 'web: bundle exec puma -t ${PUMA_MIN_THREADS:-8}:${PUMA_MAX_THREADS:-12} -w ${PUMA_WORKERS:-2} -p $PORT -e ${RACK_ENV:-development}' > Procfile"
 
 # Rspec
 # ----------------------------------------------------------------
@@ -322,6 +319,8 @@ if yes?('Use Heroku? [yes or ENTER]')
   heroku :'addons:add', 'logentries'
   heroku :'addons:add', 'scheduler'
   heroku :'addons:add', 'mongolab'
+
+  heroku :'addons:open', 'newrelic'
 
   git :push => 'heroku master'
   heroku :rake, "db:migrate --app #{heroku_app_name}"
