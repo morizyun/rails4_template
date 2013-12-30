@@ -135,6 +135,18 @@ run 'bundle exec rake RAILS_ENV=development db:create'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.rb -P config/'
 run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 
+## Errbit ###################################################
+if yes?('Use Errbit? [yes or ENTER]')
+  run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initilizers/errbit.rb -P config/initilizers'
+  run 'Register app to Errbit/Airbrake'
+  host_name = ask('hostname[host name or errbit.herokuapp.com]')
+  host_name = 'http://errbit.herokuapp.com/' if host_name !~ /^http/
+  open host_name
+  key_value = ask('key value?')
+  gsub_file 'config/initilizers/errbit.rb', /%HOST_NAME/, host_name.gsub(/(https?:\/\/|\/$)/)
+  gsub_file 'config/initilizers/errbit.rb', /%KEY_VALUE/, key_value
+end
+
 ## MongoDB ###################################################
 if yes?('Use MongoDB? [yes or ENTER]')
 append_file 'Gemfile', <<-CODE
