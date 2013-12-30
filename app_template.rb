@@ -111,7 +111,8 @@ CODE
 run 'bundle install'
 
 # set config/application.rb
-application  <<-GENERATORS
+application  do
+  %q{
     # Set timezone
     config.time_zone = 'Tokyo'
     config.active_record.default_timezone = :local
@@ -128,9 +129,19 @@ application  <<-GENERATORS
       g.test_framework  :rspec, :fixture => true
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
       g.view_specs false
+      g.controller_specs false
+      g.routing_specs false
       g.helper_specs false
+      g.request_specs false
+      g.assets false
+      g.helper false
     end
-GENERATORS
+
+    # libファイルの自動読み込み
+    config.autoload_paths += %W(#{config.root}/lib)
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
+  }
+end
 
 run 'rm -rf config/initializers/secret_token.rb'
 file 'config/initializers/secret_token.rb', <<-FILE
@@ -140,12 +151,12 @@ FILE
 # set Japanese locale
 run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
 
-# turbolink #############################################
+# turbolink
 insert_into_file 'app/assets/javascripts/application.js',%(
 //= require jquery.turbolinks
 ), after: '//= require jquery'
 
-# HAML #################################################
+# HAML 
 run 'rake haml:replace_erbs'
 
 insert_into_file 'app/views/layouts/application.html.haml',%(
@@ -155,24 +166,13 @@ insert_into_file 'app/views/layouts/application.html.haml',%(
 ), after: '= csrf_meta_tags'
 
 # Simple Form
-run 'rails g simple_form:install --bootstrap'
+generate 'simple_form:install --bootstrap'
 
 # Rails config
-run 'rails g rails_config:install'
+generate 'rails_config:install'
 
-# Rspec ################################################
-run 'rails generate rspec:install'
-run "echo '--color --drb -f d' > .rspec"
-
-insert_into_file 'spec/spec_helper.rb',%(
-  config.before :suite do
-    DatabaseRewinder.clean_all
-  end
-
-  config.after :each do
-    DatabaseRewinder.clean
-  end
-), after: 'RSpec.configure do |config|'
+# Kaminari config
+generate 'kaminari:config'
 
 # Database
 run 'rm -rf config/database.yml'
@@ -185,7 +185,23 @@ run 'bundle exec rake RAILS_ENV=development db:create'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.rb -P config/'
 run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 
-## Errbit ###################################################
+# Rspec
+# ----------------------------------------------------------------
+generate 'rspec:install'
+run "echo '--color --drb -f d' > .rspec"
+
+insert_into_file 'spec/spec_helper.rb',%(
+  config.before :suite do
+    DatabaseRewinder.clean_all
+  end
+
+  config.after :each do
+    DatabaseRewinder.clean
+  end
+), after: 'RSpec.configure do |config|'
+
+# Errbit
+# ----------------------------------------------------------------
 if yes?('Use Errbit? [yes or ENTER]')
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/errbit.rb -P config/initializers'
   run 'Register app to Errbit/Airbrake'
@@ -194,7 +210,8 @@ if yes?('Use Errbit? [yes or ENTER]')
   run "echo 'Please Change host name in config/initializers/errbit.rb'"
 end
 
-## MongoDB ###################################################
+# MongoDB
+# ----------------------------------------------------------------
 if yes?('Use MongoDB? [yes or ENTER]')
 append_file 'Gemfile', <<-CODE
 \n# Mongoid
@@ -206,7 +223,7 @@ CODE
 
   run 'bundle install'
 
-  run 'rails generate mongoid:config'
+  generate 'mongoid:config'
 
   append_file 'config/mongoid.yml', <<-CODE
     production:
@@ -216,7 +233,7 @@ CODE
   CODE
 end
 
-# git init ###################################################
+# git init ##
 # .gitignore
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
 gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
@@ -225,12 +242,47 @@ git :init
 git :add => '.'
 git :commit => "-a -m 'first commit'"
 
-## heroku deploy #############################################
+# Bitbucket
+# ----------------------------------------------------------------
+use_bitbucket = if yes?('Push Bitbucket?')
+  git_uri = `git config remote.origin.url`.strip
+  if git_uri.size == 0
+    username = ask 'What is your Bitbucket username?'
+    password = ask 'What is your Bitbucket password?'
+    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{app_name}&is_private=true'"
+    git remote: "add origin git@bitbucket.org:#{username}/#{app_name}.git"
+    git push: 'origin master'
+  else
+    say 'Repository already exists:'
+    say "#{git_uri}"
+  end
+  true
+else
+  false
+end
+
+# GitHub
+# ----------------------------------------------------------------
+if !use_bitbucket and yes?('Push GitHub?')
+  git_uri = `git config remote.origin.url`.strip
+  unless git_uri.size == 0
+    say 'Repository already exists:'
+    say "#{git_uri}"
+  else
+    username = ask 'What is your GitHub username?'
+    run "curl -u #{username} -d '{\"name\":\"#{app_name}\"}' https://api.github.com/user/repos"
+    git remote: %Q{ add origin git@github.com:#{username}/#{app_name}.git }
+    git push: %Q{ origin master }
+  end
+end
+
+# heroku deploy
+# ----------------------------------------------------------------
 if yes?('Use Heroku? [yes or ENTER]')
   def heroku(cmd, arguments="")
     run "heroku #{cmd} #{arguments}"
   end
-  
+
   # herokuに不要なファイルを設定
   file '.slugignore', <<-EOS.gsub(/^  /, '')
   *.psd
@@ -262,4 +314,3 @@ if yes?('Use Heroku? [yes or ENTER]')
   heroku :rake, "db:migrate --app #{heroku_app_name}"
   heroku :open, "--app #{heroku_app_name}"
 end
-
