@@ -99,14 +99,15 @@ run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml
 
 # create git ignore
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
-gsub_file '.gitignore', /^$/, ''
+gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
 
 # Setting Rspec
 run 'rails generate rspec:install'
 run "echo '--color --drb -f d' > .rspec"
 
 insert_into_file 'spec/spec_helper.rb',
-%(config.before :suite do
+%(
+  config.before :suite do
     DatabaseRewinder.clean_all
   end
 
@@ -116,8 +117,9 @@ insert_into_file 'spec/spec_helper.rb',
 ), after: 'RSpec.configure do |config|'
 
 # Database
-insert_into_file 'config/database.yml',%(\n  host: localhost), after: "database: #{@app_name}_development"
-insert_into_file 'config/database.yml',%(\n  host: localhost), after: "database: #{@app_name}_test"
+run 'rm -rf config/database.yml'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/postgresql/database.yml -P config/database.yml'
+gsub_file 'config/database.yml', /APPNAME/, @app_name
 run "createuser #{@app_name} -s"
 run 'bundle exec rake RAILS_ENV=development db:create'
 
