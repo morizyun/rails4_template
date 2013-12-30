@@ -123,9 +123,14 @@ insert_into_file 'spec/spec_helper.rb',
   end
 ), after: 'RSpec.configure do |config|'
 
-# database.yml
-insert_into_file 'config/database.yml',%(\n\thost: localhost\n), after: 'development:\n'
-insert_into_file 'config/database.yml',%(\n\thost: localhost\n), after: 'test:\n'
+# Database
+insert_into_file 'config/database.yml',%(\n\thost: localhost\n), after: 'development:'
+insert_into_file 'config/database.yml',%(\n\thost: localhost\n), after: 'test:'
+run "createuser #{@app_name} -s"
+run 'bundle exec rake RAILS_ENV=development db:create'
+
+# Unicorn
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.rb -P config/unicorn.rb'
 
 # git init
 git :init
