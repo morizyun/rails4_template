@@ -1,6 +1,5 @@
 # アプリ名の取得
 @app_name = app_name
-@AppName = @app_name.gsub(/\-(\w)/, "#{$1.upcase}").classify
 
 # clean file
 run 'rm README.rdoc'
