@@ -61,6 +61,9 @@ gem 'newrelic_rpm'
 # Airbrake
 gem 'airbrake'
 
+# HTML Parser
+gem 'nokogiri'
+
 group :development do
   # erbからhamlに変換
   gem 'erb2haml'
@@ -221,16 +224,16 @@ gem 'origin'
 gem 'moped'
 CODE
 
-  run 'bundle install'
+run 'bundle install'
 
-  generate 'mongoid:config'
+generate 'mongoid:config'
 
-  append_file 'config/mongoid.yml', <<-CODE
-    production:
-      sessions:
-        default:
-          uri: <%= ENV['MONGOLAB_URI'] %>
-  CODE
+append_file 'config/mongoid.yml', <<-CODE
+production:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_URI'] %>
+CODE
 end
 
 # git init ##
@@ -244,13 +247,13 @@ git :commit => "-a -m 'first commit'"
 
 # Bitbucket
 # ----------------------------------------------------------------
-use_bitbucket = if yes?('Push Bitbucket?')
+use_bitbucket = if yes?('Push Bitbucket? [yes or ENTER]')
   git_uri = `git config remote.origin.url`.strip
   if git_uri.size == 0
     username = ask 'What is your Bitbucket username?'
     password = ask 'What is your Bitbucket password?'
-    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{app_name}&is_private=true'"
-    git remote: "add origin git@bitbucket.org:#{username}/#{app_name}.git"
+    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{@app_name}&is_private=true'"
+    git remote: "add origin git@bitbucket.org:#{username}/#{@app_name}.git"
     git push: 'origin master'
   else
     say 'Repository already exists:'
@@ -263,15 +266,15 @@ end
 
 # GitHub
 # ----------------------------------------------------------------
-if !use_bitbucket and yes?('Push GitHub?')
+if !use_bitbucket and yes?('Push GitHub? [yes or ENTER]')
   git_uri = `git config remote.origin.url`.strip
   unless git_uri.size == 0
     say 'Repository already exists:'
     say "#{git_uri}"
   else
     username = ask 'What is your GitHub username?'
-    run "curl -u #{username} -d '{\"name\":\"#{app_name}\"}' https://api.github.com/user/repos"
-    git remote: %Q{ add origin git@github.com:#{username}/#{app_name}.git }
+    run "curl -u #{username} -d '{\"name\":\"#{@app_name}\"}' https://api.github.com/user/repos"
+    git remote: %Q{ add origin git@github.com:#{username}/#{@app_name}.git }
     git push: %Q{ origin master }
   end
 end
