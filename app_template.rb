@@ -125,8 +125,8 @@ insert_into_file 'spec/spec_helper.rb',
 ), after: 'RSpec.configure do |config|'
 
 # Database
-insert_into_file 'config/database.yml',%(  host: localhost), after: 'development:'
-insert_into_file 'config/database.yml',%(  host: localhost), after: 'test:'
+insert_into_file 'config/database.yml',%(\n  host: localhost), after: 'development:'
+insert_into_file 'config/database.yml',%(\n  host: localhost), after: 'test:'
 run "createuser #{@app_name} -s"
 run 'bundle exec rake RAILS_ENV=development db:create'
 
