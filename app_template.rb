@@ -118,13 +118,13 @@ insert_into_file 'spec/spec_helper.rb',
 
 # Database
 run 'rm -rf config/database.yml'
-run 'wget https://raw.github.com/morizyun/rails4_template/master/config/postgresql/database.yml -P config/database.yml'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/postgresql/database.yml -P config/'
 gsub_file 'config/database.yml', /APPNAME/, @app_name
 run "createuser #{@app_name} -s"
 run 'bundle exec rake RAILS_ENV=development db:create'
 
 # Unicorn
-run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.rb -P config/unicorn.rb'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.rb -P config/'
 run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 
 ## MongoDB ###################################################
