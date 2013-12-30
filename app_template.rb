@@ -128,7 +128,7 @@ run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.
 run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 
 ## MongoDB ###################################################
-if yes?('Use MongoDB?')
+if yes?('Use MongoDB? [yes or ENTER]')
 append_file 'Gemfile', <<-CODE
   # Mongoid
   gem 'mongoid', '4.0.0.alpha1'
@@ -155,7 +155,7 @@ git :add => '.'
 git :commit => "-a -m 'first commit'"
 
 ## heroku deploy #############################################
-if yes?('Use Heroku?')
+if yes?('Use Heroku? [yes or ENTER]')
   def heroku(cmd, arguments="")
     run "heroku #{cmd} #{arguments}"
   end
