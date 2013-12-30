@@ -17,6 +17,15 @@ gem 'foreman'
 # NewRelic
 gem 'newrelic_rpm'
 
+# Support .env
+gem 'dotenv'
+
+# Parse HTML
+gem 'nokogiri'
+
+# Manage Error
+gem 'airbrake'
+
 group :development do
   # erbからhamlに変換
   gem 'erb2haml'
@@ -68,24 +77,24 @@ run 'bundle install'
 
 # set config/application.rb
 application  <<-GENERATORS
-  # Set timezone
-  config.time_zone = 'Tokyo'
-  config.active_record.default_timezone = :local
+    # Set timezone
+    config.time_zone = 'Tokyo'
+    config.active_record.default_timezone = :local
 
-  # 日本語化
-  I18n.enforce_available_locales = true
-  config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
-  config.i18n.default_locale = :ja
+    # 日本語化
+    I18n.enforce_available_locales = true
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
+    config.i18n.default_locale = :ja
 
-  # generatorの設定
-  config.generators do |g|
-    g.orm :active_record
-    g.template_engine :haml
-    g.test_framework  :rspec, :fixture => true
-    g.fixture_replacement :factory_girl, :dir => "spec/factories"
-    g.view_specs false
-    g.helper_specs false
-  end
+    # generatorの設定
+    config.generators do |g|
+      g.orm :active_record
+      g.template_engine :haml
+      g.test_framework  :rspec, :fixture => true
+      g.fixture_replacement :factory_girl, :dir => "spec/factories"
+      g.view_specs false
+      g.helper_specs false
+    end
 GENERATORS
 
 run 'rm -rf config/initializers/secret_token.rb'
@@ -129,11 +138,11 @@ run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 ## MongoDB ###################################################
 if yes?('Use MongoDB? [yes or ENTER]')
 append_file 'Gemfile', <<-CODE
-  # Mongoid
-  gem 'mongoid', '4.0.0.alpha1'
-  gem 'bson_ext'
-  gem 'origin'
-  gem 'moped'
+\n# Mongoid
+gem 'mongoid', '4.0.0.alpha1'
+gem 'bson_ext'
+gem 'origin'
+gem 'moped'
 CODE
 
   run 'bundle install'
