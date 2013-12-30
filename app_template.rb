@@ -1,5 +1,5 @@
 # アプリ名の取得
-@app_name = app_name
+@app_name = app_name.gsub('-', '_')
 
 # clean file
 run 'rm README.rdoc'
