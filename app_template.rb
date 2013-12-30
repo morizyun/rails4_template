@@ -174,7 +174,7 @@ if yes?('Use Heroku?')
   git :add => '.'
   git :commit => "-a -m 'Configuration for heroku'"
 
-  heroku_app_name = "#{app_name}#{rand(100)}".gsub('_', '-')
+  heroku_app_name = "#{@app_name}#{rand(100)}".gsub('_', '-')
   heroku :create, "#{heroku_app_name}"
 
 # config
