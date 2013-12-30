@@ -145,7 +145,7 @@ insert_into_file 'app/assets/javascripts/application.js',%(
 # HAML #################################################
 run 'rake haml:replace_erbs'
 
-insert_into_file 'app/views/layouts/application.html.erb',%(
+insert_into_file 'app/views/layouts/application.html.haml',%(
 %script{:src=>'//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js'}
 %link{:href=>'//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', :rel=>'stylesheet'}
 %link{:href=>'//netdna.bootstrapcdn.com/bootswatch/3.0.3/simplex/bootstrap.min.css', :rel=>'stylesheet'}
