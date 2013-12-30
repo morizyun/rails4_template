@@ -234,6 +234,10 @@ production:
     default:
       uri: <%= ENV['MONGOLAB_URI'] %>
 CODE
+
+append_file 'spec/rspec_helper.rb', <<-CODE
+require 'rails/mongoid'
+CODE
 end
 
 # git init ##
