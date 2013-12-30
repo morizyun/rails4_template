@@ -155,9 +155,8 @@ FILE
 run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
 
 # turbolink
-insert_into_file 'app/assets/javascripts/application.js',%(
-//= require jquery.turbolinks
-), after: '//= require jquery'
+run 'rm -rf app/assets/javascripts/application.js'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/javascripts/application.js -P app/assets/javascripts/'
 
 # HAML 
 run 'rake haml:replace_erbs'
@@ -238,6 +237,13 @@ CODE
 append_file 'spec/rspec_helper.rb', <<-CODE
 require 'rails/mongoid'
 CODE
+
+insert_into_file 'spec/spec_helper.rb',%(
+  # Clean/Reset Mongoid DB prior to running each test.
+  config.before(:each) do
+    Mongoid::Sessions.default.collections.select {|c| c.name !~ /system/ }.each(&:drop)
+  end
+), after: 'RSpec.configure do |config|'
 end
 
 # git init ##
