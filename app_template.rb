@@ -1,5 +1,5 @@
 # アプリ名の取得
-@app_name = app_name.gsub('-', '_')
+@app_name = app_name
 
 # clean file
 run 'rm README.rdoc'
@@ -8,23 +8,55 @@ run 'rm README.rdoc'
 append_file 'Gemfile', <<-CODE
 ruby '2.1.0'
 
+# Bower Manager => https://rails-assets.org/
+
+# turbolinks support
+gem 'jquery-turbolinks'
+
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'therubyracer', platforms: :ruby
+
+# CSS Support
+gem 'less-rails'
+
+# Use unicorn as the app server
+gem 'unicorn'
+
+# Presenter Layer
+gem 'draper'
+
+# Haml
+gem 'haml-rails'
+
+# asset取得系のログを出力しない
+gem 'quiet_assets'
+
+# Form Builders
+gem 'simple_form'
+
 # 定数管理
 gem 'rails_config'
 
 # プロセス管理
 gem 'foreman'
 
+# params 引数化
+gem 'action_args'
+
+# HTML5バリデーター
+gem 'html5_validators'
+
+# PG/MySQL Log Formatter
+gem 'rails-flog'
+
+# Migration Helper
+gem 'migrant'
+
+# Pagenation
+gem 'kaminari'
+
 # NewRelic
 gem 'newrelic_rpm'
-
-# Support .env
-gem 'dotenv'
-
-# Parse HTML
-gem 'nokogiri'
-
-# Manage Error
-gem 'airbrake'
 
 group :development do
   # erbからhamlに変換
@@ -105,16 +137,31 @@ FILE
 # set Japanese locale
 run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
 
-# create git ignore
-run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
-gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
+# turbolink #############################################
+insert_into_file 'app/assets/javascripts/application.js',%(
+//= require jquery.turbolinks
+), after: '//= require jquery'
 
-# Setting Rspec
+# HAML #################################################
+run 'rake haml:replace_erbs'
+
+insert_into_file 'app/views/layouts/application.html.erb',%(
+%script{:src=>'//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js'}
+%link{:href=>'//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', :rel=>'stylesheet'}
+%link{:href=>'//netdna.bootstrapcdn.com/bootswatch/3.0.3/simplex/bootstrap.min.css', :rel=>'stylesheet'}
+), after: '= csrf_meta_tags'
+
+# Simple Form
+run 'rails g simple_form:install --bootstrap'
+
+# Rails config
+run 'rails g rails_config:install'
+
+# Rspec ################################################
 run 'rails generate rspec:install'
 run "echo '--color --drb -f d' > .rspec"
 
-insert_into_file 'spec/spec_helper.rb',
-%(
+insert_into_file 'spec/spec_helper.rb',%(
   config.before :suite do
     DatabaseRewinder.clean_all
   end
@@ -166,7 +213,11 @@ CODE
   CODE
 end
 
-# git init
+# git init ###################################################
+# .gitignore
+run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
+gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
+
 git :init
 git :add => '.'
 git :commit => "-a -m 'first commit'"
