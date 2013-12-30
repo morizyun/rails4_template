@@ -108,6 +108,7 @@ run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml
 
 # create git ignore
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
+gsub_file '.gitignore', /^$/, ''
 
 # Setting Rspec
 run 'rails generate rspec:install'
@@ -124,15 +125,49 @@ insert_into_file 'spec/spec_helper.rb',
 ), after: 'RSpec.configure do |config|'
 
 # Database
-insert_into_file 'config/database.yml',%(\n\thost: localhost\n), after: 'development:'
-insert_into_file 'config/database.yml',%(\n\thost: localhost\n), after: 'test:'
+insert_into_file 'config/database.yml',%(\n\thost: localhost), after: 'development:'
+insert_into_file 'config/database.yml',%(\n\thost: localhost), after: 'test:'
 run "createuser #{@app_name} -s"
 run 'bundle exec rake RAILS_ENV=development db:create'
 
 # Unicorn
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.rb -P config/unicorn.rb'
+run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 
 # git init
 git :init
 git :add => '.'
 git :commit => "-a -m 'first commit'"
+
+## heroku deploy #############################################
+if yes?('Use Heroku?')
+  # herokuに不要なファイルを設定
+  file '.slugignore', <<-EOS.gsub(/^  /, '')
+  *.psd
+  *.pdf
+  test
+  spec
+  features
+  doc
+  docs
+  EOS
+
+  git :add => '.'
+  git :commit => "-a -m 'Configuration for heroku'"
+
+  heroku_app_name = "#{app_name}#{rand(100)}"
+  heroku :create, "#{heroku_app_name}"
+
+# config
+  run 'heroku config:set SECRET_KEY_BASE=`rake secret`'
+  run 'heroku config:add TZ=Asia/Tokyo'
+
+# addons
+  heroku :"addons:add", "newrelic"
+  heroku :"addons:add", "logentries"
+
+  git :push => "heroku master"
+  heroku :rake, "db:migrate --app #{heroku_app_name}"
+  heroku :open, "--app #{heroku_app_name}"
+end
+
