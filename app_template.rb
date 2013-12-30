@@ -63,15 +63,6 @@ group :production, :staging do
 end
 CODE
 
-# TODO REMOVE AFTER TEST
-#if yes?('Use MongoDB?')
-#append_file 'Gemfile', <<-CODE
-#gem 'mongoid'
-#gem 'bson'
-#gem 'bson_ext'
-#CODE
-#end
-
 # bundle install
 # TODO REMOVE AFTER TEST
 #run 'bundle install'
@@ -125,14 +116,36 @@ insert_into_file 'spec/spec_helper.rb',
 ), after: 'RSpec.configure do |config|'
 
 # Database
-insert_into_file 'config/database.yml',%(\n  host: localhost), after: 'development:'
-insert_into_file 'config/database.yml',%(\n  host: localhost), after: 'test:\n'
+insert_into_file 'config/database.yml',%(\n  host: localhost), after: "database: #{@app_name}_development"
+insert_into_file 'config/database.yml',%(\n  host: localhost), after: "database: #{@app_name}_test"
 run "createuser #{@app_name} -s"
 run 'bundle exec rake RAILS_ENV=development db:create'
 
 # Unicorn
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn.rb -P config/unicorn.rb'
 run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
+
+## MongoDB ###################################################
+if yes?('Use MongoDB?')
+  append_file 'Gemfile', <<-CODE
+    # Mongoid
+    gem 'mongoid', '4.0.0.alpha1' # 最新バージョンをGitHubで確認して下さい
+    gem 'bson_ext'
+    gem 'origin'
+    gem 'moped'
+  CODE
+
+  run 'bundle install'
+
+  run 'rails generate mongoid:config'
+
+  append_file 'config/mongoid.yml', <<-CODE
+    production:
+      sessions:
+        default:
+          uri: <%= ENV['MONGOLAB_URI'] %>
+  CODE
+end
 
 # git init
 git :init
@@ -169,6 +182,7 @@ if yes?('Use Heroku?')
 # addons
   heroku :'addons:add', 'newrelic'
   heroku :'addons:add', 'logentries'
+  heroku :'addons:add', 'mongolab'
 
   git :push => 'heroku master'
   heroku :rake, "db:migrate --app #{heroku_app_name}"
