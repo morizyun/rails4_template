@@ -58,6 +58,9 @@ gem 'kaminari'
 # NewRelic
 gem 'newrelic_rpm'
 
+# Airbrake
+gem 'airbrake'
+
 group :development do
   # erbからhamlに変換
   gem 'erb2haml'
