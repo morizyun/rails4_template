@@ -127,13 +127,13 @@ run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 
 ## MongoDB ###################################################
 if yes?('Use MongoDB?')
-  append_file 'Gemfile', <<-CODE
-    # Mongoid
-    gem 'mongoid', '4.0.0.alpha1' # 最新バージョンをGitHubで確認して下さい
-    gem 'bson_ext'
-    gem 'origin'
-    gem 'moped'
-  CODE
+append_file 'Gemfile', <<-CODE
+  # Mongoid
+  gem 'mongoid', '4.0.0.alpha1'
+  gem 'bson_ext'
+  gem 'origin'
+  gem 'moped'
+CODE
 
   run 'bundle install'
 
