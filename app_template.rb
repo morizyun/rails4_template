@@ -64,8 +64,7 @@ end
 CODE
 
 # bundle install
-# TODO REMOVE AFTER TEST
-#run 'bundle install'
+run 'bundle install'
 
 # set config/application.rb
 application  <<-GENERATORS
@@ -177,11 +176,11 @@ if yes?('Use Heroku? [yes or ENTER]')
   heroku_app_name = "#{@app_name}#{rand(100)}".gsub('_', '-')
   heroku :create, "#{heroku_app_name}"
 
-# config
+  # config
   run 'heroku config:set SECRET_KEY_BASE=`rake secret`'
   run 'heroku config:add TZ=Asia/Tokyo'
 
-# addons
+  # addons
   heroku :'addons:add', 'newrelic'
   heroku :'addons:add', 'logentries'
   heroku :'addons:add', 'mongolab'
