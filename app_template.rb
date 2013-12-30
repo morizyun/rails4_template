@@ -63,17 +63,18 @@ group :production, :staging do
 end
 CODE
 
-if yes?('Use MongoDB?')
-append_file 'Gemfile', <<-CODE
-gem 'mongoid'
-gem 'bson'
-gem 'bson_ext'
-CODE
-
-end
+# TODO REMOVE AFTER TEST
+#if yes?('Use MongoDB?')
+#append_file 'Gemfile', <<-CODE
+#gem 'mongoid'
+#gem 'bson'
+#gem 'bson_ext'
+#CODE
+#end
 
 # bundle install
-run 'bundle install'
+# TODO REMOVE AFTER TEST
+#run 'bundle install'
 
 # set config/application.rb
 application  <<-GENERATORS
@@ -99,7 +100,7 @@ GENERATORS
 
 run 'rm -rf config/initializers/secret_token.rb'
 file 'config/initializers/secret_token.rb', <<-FILE
-#{@app_name.classify}::Application.config.secret_key_base = ENV['SECRET_KEY_BASE'] || '#{rake secret}'
+#{@app_name.classify}::Application.config.secret_key_base = ENV['SECRET_KEY_BASE'] || '#{`rake secret`}'
 FILE
 
 # set Japanese locale
