@@ -126,7 +126,7 @@ insert_into_file 'spec/spec_helper.rb',
 
 # Database
 insert_into_file 'config/database.yml',%(\n  host: localhost), after: 'development:'
-insert_into_file 'config/database.yml',%(\n  host: localhost), after: 'test:'
+insert_into_file 'config/database.yml',%(\n  host: localhost), after: 'test:\n'
 run "createuser #{@app_name} -s"
 run 'bundle exec rake RAILS_ENV=development db:create'
 
@@ -141,6 +141,10 @@ git :commit => "-a -m 'first commit'"
 
 ## heroku deploy #############################################
 if yes?('Use Heroku?')
+  def heroku(cmd, arguments="")
+    run "heroku #{cmd} #{arguments}"
+  end
+  
   # herokuに不要なファイルを設定
   file '.slugignore', <<-EOS.gsub(/^  /, '')
   *.psd
@@ -163,10 +167,10 @@ if yes?('Use Heroku?')
   run 'heroku config:add TZ=Asia/Tokyo'
 
 # addons
-  heroku :"addons:add", "newrelic"
-  heroku :"addons:add", "logentries"
+  heroku :'addons:add', 'newrelic'
+  heroku :'addons:add', 'logentries'
 
-  git :push => "heroku master"
+  git :push => 'heroku master'
   heroku :rake, "db:migrate --app #{heroku_app_name}"
   heroku :open, "--app #{heroku_app_name}"
 end
