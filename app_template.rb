@@ -139,10 +139,9 @@ run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 if yes?('Use Errbit? [yes or ENTER]')
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/errbit.rb -P config/initializers'
   run 'Register app to Errbit/Airbrake'
-  host_name = ask('hostname[host name or morizyun-errbit.herokuapp.com]')
-  host_name = 'http://morizyun-errbit.herokuapp.com/' if host_name !~ /^http/
-  open host_name
-  key_value = ask('key value?')
+  host_name = ask('hostname[host name or private morizyun-errbit.herokuapp.com]')
+  run "open #{host_name}"
+  key_value = ask('get host and errbit key value?')
   gsub_file 'config/initializers/errbit.rb', /%HOST_NAME/, host_name.gsub(/(https?:\/\/|\/$)/)
   gsub_file 'config/initializers/errbit.rb', /%KEY_VALUE/, key_value
 end
