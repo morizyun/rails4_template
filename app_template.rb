@@ -139,11 +139,9 @@ run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb' > Procfile"
 if yes?('Use Errbit? [yes or ENTER]')
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/errbit.rb -P config/initializers'
   run 'Register app to Errbit/Airbrake'
-  host_name = ask('hostname[host name or private morizyun-errbit.herokuapp.com]')
-  run "open #{host_name}"
-  key_value = ask('get host and errbit key value?')
-  gsub_file 'config/initializers/errbit.rb', /%HOST_NAME/, host_name.gsub(/(https?:\/\/|\/$)/)
+  key_value = ask('errbit key value?')
   gsub_file 'config/initializers/errbit.rb', /%KEY_VALUE/, key_value
+  run "echo 'Please Change host name in config/initializers/errbit.rb'"
 end
 
 ## MongoDB ###################################################
