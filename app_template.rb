@@ -99,7 +99,7 @@ GENERATORS
 
 run 'rm -rf config/initializers/secret_token.rb'
 file 'config/initializers/secret_token.rb', <<-FILE
-#{@app_name.classify}::Application.config.secret_key_base = ENV['SECRET_KEY_BASE'] || 'sometoken'
+#{@app_name.classify}::Application.config.secret_key_base = ENV['SECRET_KEY_BASE'] || '#{rake secret}'
 FILE
 
 # set Japanese locale
@@ -121,6 +121,10 @@ insert_into_file 'spec/spec_helper.rb',
     DatabaseRewinder.clean
   end
 ), after: 'RSpec.configure do |config|'
+
+# database.yml
+insert_into_file 'config/database.yml',%(\n\thost: localhost\n), after: 'development:\n'
+insert_into_file 'config/database.yml',%(\n\thost: localhost\n), after: 'test:\n'
 
 # git init
 git :init
