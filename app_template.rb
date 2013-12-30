@@ -255,6 +255,7 @@ if yes?('Use Heroku? [yes or ENTER]')
   # addons
   heroku :'addons:add', 'newrelic'
   heroku :'addons:add', 'logentries'
+  heroku :'addons:add', 'scheduler'
   heroku :'addons:add', 'mongolab'
 
   git :push => 'heroku master'
