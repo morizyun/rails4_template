@@ -28,19 +28,16 @@ gem 'draper'
 # Haml
 gem 'haml-rails'
 
-# asset取得系のログを出力しない
+# Assets log cleaner
 gem 'quiet_assets'
 
 # Form Builders
 gem 'simple_form'
 
-# 定数管理
-gem 'rails_config'
-
-# プロセス管理
+# # Process Management
 gem 'foreman'
 
-# HTML5バリデーター
+# HTML5 Validator
 gem 'html5_validators'
 
 # PG/MySQL Log Formatter
@@ -61,8 +58,11 @@ gem 'airbrake'
 # HTML Parser
 gem 'nokogiri'
 
+# App configuration
+gem 'figaro'
+
 group :development do
-  # erbからhamlに変換
+  # Converter erb => haml
   gem 'erb2haml'
 end
 
@@ -167,8 +167,8 @@ insert_into_file 'app/views/layouts/application.html.haml',%(
 # Simple Form
 generate 'simple_form:install --bootstrap'
 
-# Rails config
-generate 'rails_config:install'
+# Figaro
+generate 'figaro:install'
 
 # Kaminari config
 generate 'kaminari:config'
