@@ -169,6 +169,7 @@ generate 'simple_form:install --bootstrap'
 
 # Figaro
 generate 'figaro:install'
+run 'wget -O https://raw.github.com/morizyun/rails4_template/master/config/application.yml -P config/'
 
 # Kaminari config
 generate 'kaminari:config'
