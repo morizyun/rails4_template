@@ -67,9 +67,6 @@ group :development do
 end
 
 group :development, :test do
-  # Rails application preloader
-  gem 'spring'
-
   # Railsコンソールの多機能版
   gem 'pry-rails'
 
@@ -88,6 +85,11 @@ group :development, :test do
 
   # pryの色付けをしてくれる
   gem 'awesome_print'
+
+  # Guard
+  gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i
+  gem 'guard-rspec'
+  gem 'guard-spring'
 end
 
 group :test do
@@ -107,8 +109,12 @@ group :production, :staging do
 end
 CODE
 
-# bundle install
+# install gems
 run 'bundle install'
+
+# Install application Preloader Spring
+# 詳細はhttp://qiita.com/unosk/items/c2e2bbc31d97e92803dcのJokerさんのコメント(GitHub/springのREADME)
+run 'gem install spring'
 
 # set config/application.rb
 application  do
@@ -185,7 +191,7 @@ run 'bundle exec rake RAILS_ENV=development db:create'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/after_initialize.rb -P config/initializers/'
 run "echo 'web: bundle exec puma -t ${PUMA_MIN_THREADS:-8}:${PUMA_MAX_THREADS:-12} -w ${PUMA_WORKERS:-2} -p $PORT -e ${RACK_ENV:-development}' > Procfile"
 
-# Rspec
+# Rspec/Guard
 # ----------------------------------------------------------------
 generate 'rspec:install'
 run "echo '--color --drb -f d' > .rspec"
@@ -198,7 +204,18 @@ insert_into_file 'spec/spec_helper.rb',%(
   config.after :each do
     DatabaseRewinder.clean
   end
+
+  config.before :all do
+    FactoryGirl.reload
+  end
 ), after: 'RSpec.configure do |config|'
+
+insert_into_file 'spec/spec_helper.rb', "\nrequire 'factory_girl_rails'", after: "require 'rspec/rails'"
+gsub_file 'spec/spec_helper.rb', "require 'rspec/autorun'", ''
+
+run 'guard init'
+
+gsub_file 'Guardfile', 'guard :rspec do', "guard :rspec, cmd: 'spring rspec -f doc' do"
 
 # Errbit
 # ----------------------------------------------------------------
