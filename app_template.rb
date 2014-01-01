@@ -13,6 +13,10 @@ ruby '2.1.0'
 # turbolinks support
 gem 'jquery-turbolinks'
 
+# Source Map
+gem 'coffee-rails-source-maps'
+gem 'sass-rails-source-maps'
+
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
 
