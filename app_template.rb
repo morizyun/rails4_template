@@ -9,6 +9,7 @@ append_file 'Gemfile', <<-CODE
 ruby '2.1.0'
 
 # Bower Manager => https://rails-assets.org/
+source 'https://rails-assets.org'
 
 # turbolinks support
 gem 'jquery-turbolinks'
@@ -116,10 +117,6 @@ CODE
 # install gems
 run 'bundle install'
 
-# Install application Preloader Spring
-# 詳細はhttp://qiita.com/unosk/items/c2e2bbc31d97e92803dcのJokerさんのコメント(GitHub/springのREADME)
-run 'gem install spring'
-
 # set config/application.rb
 application  do
   %q{
@@ -161,13 +158,14 @@ FILE
 # set Japanese locale
 run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
 
-# turbolink
+# application.js(turbolink setting)
 run 'rm -rf app/assets/javascripts/application.js'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/javascripts/application.js -P app/assets/javascripts/'
 
 # HAML 
 run 'rake haml:replace_erbs'
 
+# Bootstrap/Bootswach/Font-Awaresome
 insert_into_file 'app/views/layouts/application.html.haml',%(
 %script{:src=>'//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js'}
 %link{:href=>'//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', :rel=>'stylesheet'}
@@ -183,6 +181,23 @@ run 'wget -O https://raw.github.com/morizyun/rails4_template/master/config/appli
 
 # Kaminari config
 generate 'kaminari:config'
+generate 'kaminari:views  bootstrap'
+
+run 'rm -rf app/view/kaminari/_paginator.html.haml'
+file 'app/view/kaminari/_paginator.html.haml', <<-FILE
+= paginator.render do
+  .pagination{style: 'text-align: center; display: block;'}
+    %ul.pagination
+      = first_page_tag unless current_page.first?
+      = prev_page_tag unless current_page.first?
+      - each_page do |page|
+        - if page.left_outer? || page.right_outer? || page.inside_window?
+          = page_tag page
+        - elsif !page.was_truncated?
+          = gap_tag
+      = next_page_tag unless current_page.last?
+      = last_page_tag unless current_page.last?
+FILE
 
 # Database
 run 'rm -rf config/database.yml'
@@ -195,8 +210,9 @@ run 'bundle exec rake RAILS_ENV=development db:create'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/after_initialize.rb -P config/initializers/'
 run "echo 'web: bundle exec puma -t ${PUMA_MIN_THREADS:-8}:${PUMA_MAX_THREADS:-12} -w ${PUMA_WORKERS:-2} -p $PORT -e ${RACK_ENV:-development}' > Procfile"
 
-# Rspec/Guard
+# Rspec/Spring/Guard
 # ----------------------------------------------------------------
+# Rspec
 generate 'rspec:install'
 run "echo '--color --drb -f d' > .rspec"
 
@@ -212,13 +228,19 @@ insert_into_file 'spec/spec_helper.rb',%(
   config.before :all do
     FactoryGirl.reload
   end
+
+  config.include FactoryGirl::Syntax::Methods
 ), after: 'RSpec.configure do |config|'
 
 insert_into_file 'spec/spec_helper.rb', "\nrequire 'factory_girl_rails'", after: "require 'rspec/rails'"
 gsub_file 'spec/spec_helper.rb', "require 'rspec/autorun'", ''
 
-run 'guard init'
+# Spring
+run 'wget https://raw.github.com/jonleighton/spring/master/bin/spring -P bin/'
+run 'sudo chmod a+x bin/spring'
 
+# Guard
+run 'guard init'
 gsub_file 'Guardfile', 'guard :rspec do', "guard :rspec, cmd: 'spring rspec -f doc' do"
 
 # Errbit
