@@ -180,7 +180,7 @@ append_file 'Gemfile', <<-FILE
   config/application.yml
 FILE
 
-run 'wget -O https://raw.github.com/morizyun/rails4_template/master/config/application.yml -P config/'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/application.yml -P config/'
 
 # Kaminari config
 generate 'kaminari:config'
