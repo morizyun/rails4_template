@@ -176,7 +176,10 @@ insert_into_file 'app/views/layouts/application.html.haml',%(
 generate 'simple_form:install --bootstrap'
 
 # Figaro
-append_file 'Gemfile', '\n config/application.yml\n'
+append_file 'Gemfile', <<-FILE
+  config/application.yml
+FILE
+
 run 'wget -O https://raw.github.com/morizyun/rails4_template/master/config/application.yml -P config/'
 
 # Kaminari config
