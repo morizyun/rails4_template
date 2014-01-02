@@ -176,7 +176,7 @@ insert_into_file 'app/views/layouts/application.html.haml',%(
 generate 'simple_form:install --bootstrap'
 
 # Figaro
-append_file 'Gemfile', <<-FILE
+append_file '.gitignore', <<-FILE
   config/application.yml
 FILE
 
