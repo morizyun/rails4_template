@@ -364,9 +364,12 @@ if yes?('Use Heroku? [yes or ENTER]')
   heroku :'addons:add', 'scheduler'
   heroku :'addons:add', 'mongolab'
 
-  heroku :'addons:open', 'newrelic'
-
   git :push => 'heroku master'
   heroku :rake, "db:migrate --app #{heroku_app_name}"
-  heroku :open, "--app #{heroku_app_name}"
+
+  # set newrelic key
+  heroku :'addons:open', 'newrelic'
+  run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
+  key_value = ask('Newrelic key value?')
+  gsub_file 'config/newrelic.yml', /%KEY_VALUE/, key_value
 end
