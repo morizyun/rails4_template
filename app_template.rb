@@ -296,40 +296,6 @@ git :init
 git :add => '.'
 git :commit => "-a -m 'first commit'"
 
-# Bitbucket
-# ----------------------------------------------------------------
-use_bitbucket = if yes?('Push Bitbucket? [yes or ENTER]')
-  git_uri = `git config remote.origin.url`.strip
-  if git_uri.size == 0
-    username = ask 'What is your Bitbucket username?'
-    password = ask 'What is your Bitbucket password?'
-    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{@app_name}&is_private=true'"
-    git remote: "add origin git@bitbucket.org:#{username}/#{@app_name}.git"
-    git push: 'origin master'
-  else
-    say 'Repository already exists:'
-    say "#{git_uri}"
-  end
-  true
-else
-  false
-end
-
-# GitHub
-# ----------------------------------------------------------------
-if !use_bitbucket and yes?('Push GitHub? [yes or ENTER]')
-  git_uri = `git config remote.origin.url`.strip
-  unless git_uri.size == 0
-    say 'Repository already exists:'
-    say "#{git_uri}"
-  else
-    username = ask 'What is your GitHub username?'
-    run "curl -u #{username} -d '{\"name\":\"#{@app_name}\"}' https://api.github.com/user/repos"
-    git remote: %Q{ add origin git@github.com:#{username}/#{@app_name}.git }
-    git push: %Q{ origin master }
-  end
-end
-
 # heroku deploy
 # ----------------------------------------------------------------
 if yes?('Use Heroku? [yes or ENTER]')
@@ -370,6 +336,40 @@ if yes?('Use Heroku? [yes or ENTER]')
   # set newrelic key
   heroku :'addons:open', 'newrelic'
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
-  key_value = ask('Newrelic key value?')
+  key_value = ask('Newrelic licence key value?')
   gsub_file 'config/newrelic.yml', /%KEY_VALUE/, key_value
+end
+
+# Bitbucket
+# ----------------------------------------------------------------
+use_bitbucket = if yes?('Push Bitbucket? [yes or ENTER]')
+                  git_uri = `git config remote.origin.url`.strip
+                  if git_uri.size == 0
+                    username = ask 'What is your Bitbucket username?'
+                    password = ask 'What is your Bitbucket password?'
+                    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{@app_name}&is_private=true'"
+                    git remote: "add origin git@bitbucket.org:#{username}/#{@app_name}.git"
+                    git push: 'origin master'
+                  else
+                    say 'Repository already exists:'
+                    say "#{git_uri}"
+                  end
+                  true
+                else
+                  false
+                end
+
+# GitHub
+# ----------------------------------------------------------------
+if !use_bitbucket and yes?('Push GitHub? [yes or ENTER]')
+  git_uri = `git config remote.origin.url`.strip
+  unless git_uri.size == 0
+    say 'Repository already exists:'
+    say "#{git_uri}"
+  else
+    username = ask 'What is your GitHub username?'
+    run "curl -u #{username} -d '{\"name\":\"#{@app_name}\"}' https://api.github.com/user/repos"
+    git remote: %Q{ add origin git@github.com:#{username}/#{@app_name}.git }
+    git push: %Q{ origin master }
+  end
 end
