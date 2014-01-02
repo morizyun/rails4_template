@@ -66,6 +66,9 @@ gem 'nokogiri'
 # App configuration
 gem 'figaro'
 
+# Hash extensions
+gem 'hashie'
+
 group :development do
   # Converter erb => haml
   gem 'erb2haml'
@@ -91,21 +94,19 @@ group :development, :test do
   # pryの色付けをしてくれる
   gem 'awesome_print'
 
-  # Guard
-  gem 'rb-fsevent', :require => false if RUBY_PLATFORM =~ /darwin/i
-  gem 'guard-rspec'
-  gem 'guard-spring'
-end
-
-group :test do
   # Rspec
   gem 'rspec-rails'
+  gem 'rake_shared_context'
 
   # fixtureの代わり
   gem "factory_girl_rails"
 
   # テスト環境のテーブルをきれいにする
   gem 'database_rewinder'
+
+  # Guard
+  gem 'guard-rspec'
+  gem 'guard-spring'
 end
 
 group :production, :staging do
