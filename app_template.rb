@@ -275,7 +275,7 @@ production:
       uri: <%= ENV['MONGOLAB_URI'] %>
 CODE
 
-append_file 'spec/rspec_helper.rb', <<-CODE
+append_file 'spec/spec_helper.rb', <<-CODE
 require 'rails/mongoid'
 CODE
 
