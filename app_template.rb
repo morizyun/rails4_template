@@ -5,6 +5,7 @@
 run 'rm README.rdoc'
 
 # .gitignore
+run 'brew install gibo'
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
 gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
 
@@ -316,7 +317,7 @@ if yes?('Use Heroku? [yes or ENTER]')
   git :add => '.'
   git :commit => "-a -m 'Configuration for heroku'"
 
-  heroku_app_name = "#{@app_name}#{rand(100)}".gsub('_', '-')
+  heroku_app_name = @app_name.gsub('_', '-')
   heroku :create, "#{heroku_app_name}"
 
   # config
