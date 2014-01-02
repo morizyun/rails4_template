@@ -336,6 +336,7 @@ if yes?('Use Heroku? [yes or ENTER]')
   # set newrelic key
   heroku :'addons:open', 'newrelic'
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
+  gsub_file 'config/newrelic.yml', /%APP_NAME/, @app_name
   key_value = ask('Newrelic licence key value?')
   gsub_file 'config/newrelic.yml', /%KEY_VALUE/, key_value
 end
