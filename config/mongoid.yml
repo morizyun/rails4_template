@@ -1,0 +1,12 @@
+development:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_URI'] %>
+test:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_URI'] %>
+production:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_URI'] %>

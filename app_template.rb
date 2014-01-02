@@ -4,6 +4,10 @@
 # clean file
 run 'rm README.rdoc'
 
+# .gitignore
+run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
+gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
+
 # add to Gemfile
 append_file 'Gemfile', <<-CODE
 ruby '2.1.0'
@@ -271,12 +275,7 @@ run 'bundle install'
 
 generate 'mongoid:config'
 
-append_file 'config/mongoid.yml', <<-CODE
-production:
-  sessions:
-    default:
-      uri: <%= ENV['MONGOLAB_URI'] %>
-CODE
+run 'wget -O https://raw.github.com/morizyun/rails4_template/master/config/mongoid.yml -P config/'
 
 append_file 'spec/spec_helper.rb', <<-CODE
 require 'rails/mongoid'
@@ -291,10 +290,7 @@ insert_into_file 'spec/spec_helper.rb',%(
 end
 
 # git init ##
-# .gitignore
-run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
-gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
-
+# ----------------------------------------------------------------
 git :init
 git :add => '.'
 git :commit => "-a -m 'first commit'"
