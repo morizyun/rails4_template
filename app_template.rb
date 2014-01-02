@@ -14,10 +14,6 @@ source 'https://rails-assets.org'
 # turbolinks support
 gem 'jquery-turbolinks'
 
-# Source Map
-gem 'coffee-rails-source-maps'
-gem 'sass-rails-source-maps'
-
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
 
@@ -107,6 +103,9 @@ group :development, :test do
   # Guard
   gem 'guard-rspec'
   gem 'guard-spring'
+
+  # Rails/Rack Profiler
+  gem 'speed_gun'
 end
 
 group :production, :staging do
