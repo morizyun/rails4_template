@@ -276,7 +276,7 @@ run 'bundle install'
 
 generate 'mongoid:config'
 
-run 'wget -O https://raw.github.com/morizyun/rails4_template/master/config/mongoid.yml -P config/'
+run 'wget -N https://raw.github.com/morizyun/rails4_template/master/config/mongoid.yml -P config/'
 
 append_file 'spec/spec_helper.rb', <<-CODE
 require 'rails/mongoid'
