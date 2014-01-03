@@ -5,3 +5,5 @@ test:
   MONGOLAB_URI: mongodb://localhost:27017/%APP_NAME-test
   REDISCLOUD_URL: redis://localhost:6379
 production:
+  MONGOLAB_URI: mongodb://
+  REDISCLOUD_URL: redis://

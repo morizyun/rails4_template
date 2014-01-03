@@ -185,6 +185,7 @@ append_file '.gitignore', <<-FILE
 FILE
 
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/application.yml -P config/'
+gsub_file 'config/application.yml', /%APP_NAME/, @app_name
 
 # Kaminari config
 generate 'kaminari:config'
@@ -252,7 +253,7 @@ gsub_file 'Guardfile', 'guard :rspec do', "guard :rspec, cmd: 'spring rspec -f d
 
 # Errbit
 # ----------------------------------------------------------------
-if yes?('Use Errbit? [yes or ENTER]')
+if yes?('Use Errbit? [yes or ELSE]')
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/errbit.rb -P config/initializers'
   run 'Register app to Errbit/Airbrake'
   key_value = ask('errbit key value?')
@@ -262,7 +263,7 @@ end
 
 # MongoDB
 # ----------------------------------------------------------------
-use_mongodb = if yes?('Use MongoDB? [yes or ENTER]')
+use_mongodb = if yes?('Use MongoDB? [yes or ELSE]')
 append_file 'Gemfile', <<-CODE
 \n# Mongoid
 gem 'mongoid', '4.0.0.alpha1'
@@ -317,7 +318,7 @@ insert_into_file 'config/application.yml', tw_setting, after: 'development:'
 insert_into_file 'config/application.yml', tw_setting, after: 'production:'
 end
 
-# git init ##
+# git init
 # ----------------------------------------------------------------
 git :init
 git :add => '.'
@@ -325,7 +326,7 @@ git :commit => "-a -m 'first commit'"
 
 # heroku deploy
 # ----------------------------------------------------------------
-if yes?('Use Heroku? [yes or ENTER]')
+if yes?('Use Heroku? [yes or ELSE]')
   def heroku(cmd, arguments="")
     run "heroku #{cmd} #{arguments}"
   end
@@ -352,13 +353,12 @@ if yes?('Use Heroku? [yes or ENTER]')
   run 'heroku config:add TZ=Asia/Tokyo'
 
   # addons
-  heroku :'addons:add', 'newrelic'
   heroku :'addons:add', 'logentries'
   heroku :'addons:add', 'scheduler'
   heroku :'addons:add', 'mongolab' if use_mongodb
 
   git :push => 'heroku master'
-  heroku :rake, "db:migrate --app #{heroku_app_name}"
+  heroku :run, "rake db:migrate --app #{heroku_app_name}"
 
   # scale worker
   if use_heroku_worker
@@ -366,17 +366,20 @@ if yes?('Use Heroku? [yes or ENTER]')
     heroku 'scale worker=1'
   end
 
-  # set newrelic key
-  heroku :'addons:open', 'newrelic'
-  run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
-  gsub_file 'config/newrelic.yml', /%APP_NAME/, @app_name
-  key_value = ask('Newrelic licence key value?')
-  gsub_file 'config/newrelic.yml', /%KEY_VALUE/, key_value
+  # newrelic
+  if yes?('Use newrelic?[yes or ELSE]')
+    heroku :'addons:add', 'newrelic'
+    heroku :'addons:open', 'newrelic'
+    run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
+    gsub_file 'config/newrelic.yml', /%APP_NAME/, @app_name
+    key_value = ask('Newrelic licence key value?')
+    gsub_file 'config/newrelic.yml', /%KEY_VALUE/, key_value
+  end
 end
 
 # Bitbucket
 # ----------------------------------------------------------------
-use_bitbucket = if yes?('Push Bitbucket? [yes or ENTER]')
+use_bitbucket = if yes?('Push Bitbucket? [yes or ELSE]')
   git_uri = `git config remote.origin.url`.strip
   if git_uri.size == 0
     username = ask 'What is your Bitbucket username?'
@@ -395,7 +398,7 @@ end
 
 # GitHub
 # ----------------------------------------------------------------
-if !use_bitbucket and yes?('Push GitHub? [yes or ENTER]')
+if !use_bitbucket and yes?('Push GitHub? [yes or ELSE]')
   git_uri = `git config remote.origin.url`.strip
   unless git_uri.size == 0
     say 'Repository already exists:'
