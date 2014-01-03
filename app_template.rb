@@ -290,6 +290,34 @@ insert_into_file 'spec/spec_helper.rb',%(
 ), after: 'RSpec.configure do |config|'
 end
 
+# Eventmachine
+# ----------------------------------------------------------------
+use_heroku_worker = if yes?('Use eventmachine? [yes or ELSE]')
+append_file 'Gemfile', <<-CODE
+\n# EventMachine/Twitter Stream API
+gem 'eventmachine'
+gem 'tweetstream'
+CODE
+
+run 'bundle install'
+
+run 'mkdir lib/eventmachine'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/lib/eventmachine/twitter_stream.rb -P lib/eventmachine/'
+
+append_file 'Procfile', <<-CODE
+worker: bundle exec ruby lib/eventmachine/twitter_stream.rb
+CODE
+
+tw_setting = %(
+  TWITTER_CONSUMER_KEY:
+  TWITTER_CONSUMER_SECRET:
+  TWITTER_OAUTH_TOKEN:
+  TWITTER_OAUTH_TOKEN_SECRET:
+)
+insert_into_file 'confg/application.yml', tw_setting, after: 'development:'
+insert_into_file 'confg/application.yml', tw_setting, after: 'production:'
+end
+
 # git init ##
 # ----------------------------------------------------------------
 git :init
@@ -333,6 +361,12 @@ if yes?('Use Heroku? [yes or ENTER]')
   git :push => 'heroku master'
   heroku :rake, "db:migrate --app #{heroku_app_name}"
 
+  # scale worker
+  if use_heroku_worker
+    heroku 'scale web=0'
+    heroku 'scale worker=1'
+  end
+
   # set newrelic key
   heroku :'addons:open', 'newrelic'
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
@@ -344,21 +378,21 @@ end
 # Bitbucket
 # ----------------------------------------------------------------
 use_bitbucket = if yes?('Push Bitbucket? [yes or ENTER]')
-                  git_uri = `git config remote.origin.url`.strip
-                  if git_uri.size == 0
-                    username = ask 'What is your Bitbucket username?'
-                    password = ask 'What is your Bitbucket password?'
-                    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{@app_name}&is_private=true'"
-                    git remote: "add origin git@bitbucket.org:#{username}/#{@app_name}.git"
-                    git push: 'origin master'
-                  else
-                    say 'Repository already exists:'
-                    say "#{git_uri}"
-                  end
-                  true
-                else
-                  false
-                end
+  git_uri = `git config remote.origin.url`.strip
+  if git_uri.size == 0
+    username = ask 'What is your Bitbucket username?'
+    password = ask 'What is your Bitbucket password?'
+    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{@app_name}&is_private=true'"
+    git remote: "add origin git@bitbucket.org:#{username}/#{@app_name}.git"
+    git push: 'origin master'
+  else
+    say 'Repository already exists:'
+    say "#{git_uri}"
+  end
+  true
+else
+  false
+end
 
 # GitHub
 # ----------------------------------------------------------------

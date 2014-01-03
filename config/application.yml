@@ -1,6 +1,7 @@
 development:
-  HELLO: developers
-development:
-  HELLO: testers
+  MONGOLAB_URI: mongodb://localhost:27017/%APP_NAME-development
+  REDISCLOUD_URL: redis://localhost:6379
+test:
+  MONGOLAB_URI: mongodb://localhost:27017/%APP_NAME-test
+  REDISCLOUD_URL: redis://localhost:6379
 production:
-  HELLO: users
