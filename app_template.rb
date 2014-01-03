@@ -312,10 +312,9 @@ tw_setting = %(
   TWITTER_CONSUMER_KEY:
   TWITTER_CONSUMER_SECRET:
   TWITTER_OAUTH_TOKEN:
-  TWITTER_OAUTH_TOKEN_SECRET:
-)
+  TWITTER_OAUTH_TOKEN_SECRET:)
 insert_into_file 'config/application.yml', tw_setting, after: 'development:'
-insert_into_file 'config/application.yml', tw_setting, after: 'production:'
+append_file 'config/application.yml', tw_setting
 end
 
 # git init
