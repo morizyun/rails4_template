@@ -5,8 +5,7 @@
 run 'rm README.rdoc'
 
 # .gitignore
-run 'brew install gibo'
-run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore'
+run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore' rescue nil
 gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
 
 # add to Gemfile
@@ -263,7 +262,7 @@ end
 
 # MongoDB
 # ----------------------------------------------------------------
-if yes?('Use MongoDB? [yes or ENTER]')
+use_mongodb = if yes?('Use MongoDB? [yes or ENTER]')
 append_file 'Gemfile', <<-CODE
 \n# Mongoid
 gem 'mongoid', '4.0.0.alpha1'
@@ -314,8 +313,8 @@ tw_setting = %(
   TWITTER_OAUTH_TOKEN:
   TWITTER_OAUTH_TOKEN_SECRET:
 )
-insert_into_file 'confg/application.yml', tw_setting, after: 'development:'
-insert_into_file 'confg/application.yml', tw_setting, after: 'production:'
+insert_into_file 'config/application.yml', tw_setting, after: 'development:'
+insert_into_file 'config/application.yml', tw_setting, after: 'production:'
 end
 
 # git init ##
@@ -356,7 +355,7 @@ if yes?('Use Heroku? [yes or ENTER]')
   heroku :'addons:add', 'newrelic'
   heroku :'addons:add', 'logentries'
   heroku :'addons:add', 'scheduler'
-  heroku :'addons:add', 'mongolab'
+  heroku :'addons:add', 'mongolab' if use_mongodb
 
   git :push => 'heroku master'
   heroku :rake, "db:migrate --app #{heroku_app_name}"

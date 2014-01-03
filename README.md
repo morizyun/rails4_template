@@ -4,7 +4,7 @@ Rails4 Application Template. - [Rails Application Templates — Ruby on Rails Gu
 
 It's easy to start Rails4 x Heroku application with MongoDB and etc.
 
-## Installation
+## Execution Command
 
 Execute following command:
 
