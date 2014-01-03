@@ -8,7 +8,9 @@ It's easy to start Rails4 x Heroku application with MongoDB and etc.
 
 Execute following command:
 
-    rails new test-app --database=postgresql --skip-test-unit --skip-bundle -m https://raw.github.com/morizyun/rails4_template/master/app_template.rb
+    rails new test_app --database=postgresql --skip-test-unit --skip-bundle -m https://raw.github.com/morizyun/rails4_template/master/app_template.rb
+
+Caution: Please don't use '-' in application name.
 
 ## Detail Commands
 
