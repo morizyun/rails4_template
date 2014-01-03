@@ -404,8 +404,9 @@ if !use_bitbucket and yes?('Push GitHub? [yes or ELSE]')
     say 'Repository already exists:'
     say "#{git_uri}"
   else
+    email = ask 'What is your GitHub login E-Mail address?'
+    run "curl -u #{email} -d '{\"name\":\"#{@app_name}\"}' https://api.github.com/user/repos"
     username = ask 'What is your GitHub username?'
-    run "curl -u #{username} -d '{\"name\":\"#{@app_name}\"}' https://api.github.com/user/repos"
     git remote: %Q{ add origin git@github.com:#{username}/#{@app_name}.git }
     git push: %Q{ origin master }
   end
