@@ -2,7 +2,14 @@
 
 Rails4 Application Template. - [Rails Application Templates — Ruby on Rails Guides](http://guides.rubyonrails.org/rails_application_templates.html)
 
-It's easy to start Rails4 x Heroku application with MongoDB and etc.
+It's easy to start Rails4 x Heroku application with MongoDB and Redis, etc.
+
+## Reparation
+
+I recommend to install gibo before generating Rails project. - [simonwhitaker/gibo](https://github.com/simonwhitaker/gibo):
+(It's not compulsory, maybe...)
+
+    brew install gibo
 
 ## Execution Command
 
@@ -12,9 +19,9 @@ Execute following command:
 
 Caution: Please don't use '-' in application name.
 
-## Detail Commands
+## Detail Explanation
 
-Detail explanation in this template is as follows;
+Japanese explanation in this template is as follows;
 
 - [Rails4でheroku Pushまでの最短手順 [haml/bootstrap 3.0/postgresql or MySQL] - 酒と泪とRubyとRailsと](http://morizyun.github.io/blog/heroku-rails4-postgresql-introduction/)
 

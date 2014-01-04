@@ -317,6 +317,20 @@ insert_into_file 'config/application.yml', tw_setting, after: 'development:'
 append_file 'config/application.yml', tw_setting
 end
 
+# Redis
+# ----------------------------------------------------------------
+use_redis = if yes?('Use Redis? [yes or ELSE]')
+append_file 'Gemfile', <<-CODE
+\n# Redis
+gem 'redis-objects'
+gem 'redis-namespace'
+CODE
+
+run 'bundle install'
+
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/redis.rb -P config/initializers/'
+end
+
 # git init
 # ----------------------------------------------------------------
 git :init
@@ -355,6 +369,7 @@ if yes?('Use Heroku? [yes or ELSE]')
   heroku :'addons:add', 'logentries'
   heroku :'addons:add', 'scheduler'
   heroku :'addons:add', 'mongolab' if use_mongodb
+  heroku :'addons:add', 'rediscloud' if use_redis
 
   git :push => 'heroku master'
   heroku :run, "rake db:migrate --app #{heroku_app_name}"
