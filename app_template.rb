@@ -297,7 +297,7 @@ end
 
 # Eventmachine
 # ----------------------------------------------------------------
-use_heroku_worker = if yes?('Use eventmachine? [yes or ELSE]')
+use_heroku_worker = if yes?('Use eventmachine(worker process)? [yes or ELSE]')
 append_file 'Gemfile', <<-CODE
 \n# EventMachine/Twitter Stream API
 gem 'eventmachine'
