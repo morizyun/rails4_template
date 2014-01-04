@@ -6,7 +6,8 @@ It's easy to start Rails4 x Heroku application with MongoDB and Redis, etc.
 
 ## Reparation
 
-I recommend to install gibo before generating Rails project. - [simonwhitaker/gibo](https://github.com/simonwhitaker/gibo):
+I recommend to install gibo before generating Rails project. - [simonwhitaker/gibo](https://github.com/simonwhitaker/gibo)
+
 (It's not compulsory, maybe...)
 
     brew install gibo
