@@ -276,7 +276,12 @@ run 'bundle install'
 
 generate 'mongoid:config'
 
-run 'wget -N https://raw.github.com/morizyun/rails4_template/master/config/mongoid.yml -P config/'
+append_file 'config/mongoid.yml', <<-CODE
+production:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_URI'] %>
+CODE
 
 append_file 'spec/spec_helper.rb', <<-CODE
 require 'rails/mongoid'

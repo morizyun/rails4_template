@@ -1,9 +1,6 @@
 development:
-  MONGOLAB_URI: mongodb://localhost:27017/%APP_NAME-development
-  REDISCLOUD_URL: redis://localhost:6379
+  hello: 'user'
 test:
-  MONGOLAB_URI: mongodb://localhost:27017/%APP_NAME-test
-  REDISCLOUD_URL: redis://localhost:6379
+  hello: 'tester'
 production:
-  MONGOLAB_URI: mongodb://
-  REDISCLOUD_URL: redis://
+  hello: 'world'
