@@ -191,8 +191,8 @@ gsub_file 'config/application.yml', /%APP_NAME/, @app_name
 generate 'kaminari:config'
 generate 'kaminari:views  bootstrap'
 
-run 'rm -rf app/view/kaminari/_paginator.html.haml'
-file 'app/view/kaminari/_paginator.html.haml', <<-FILE
+run 'rm -rf app/views/kaminari/_paginator.html.haml'
+file 'app/views/kaminari/_paginator.html.haml', <<-FILE
 = paginator.render do
   .pagination{style: 'text-align: center; display: block;'}
     %ul.pagination
