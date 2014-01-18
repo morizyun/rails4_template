@@ -2,7 +2,16 @@
 
 Rails4 Application Template. - [Rails Application Templates — Ruby on Rails Guides](http://guides.rubyonrails.org/rails_application_templates.html)
 
-It's easy to start Rails4 x Heroku application with MongoDB and Redis, etc.
+It's easy to start Rails4 x Heroku application.
+
+In addition, you can choose following options;
+
+1) Errbit
+2) MongoDB
+3) EventMachine
+4) Redis
+5) Heroku Push
+6) Bitbucket/GitHub Repository Create&Push
 
 ## Reparation
 
@@ -30,7 +39,7 @@ Japanese explanation in this template is as follows;
 
 - Ruby 2.1.0
 - Rails 4.0.2
-- Mac & homebrew
+- Mac OSX 10.8.5(Mountain Lion)
 
 ## Contributing
 

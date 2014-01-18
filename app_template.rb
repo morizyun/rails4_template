@@ -108,8 +108,8 @@ group :development, :test do
   gem 'guard-rspec'
   gem 'guard-spring'
 
-  # Rails/Rack Profiler
-  gem 'speed_gun'
+  # Rack Profiler
+  gem 'rack-mini-profiler'
 end
 
 group :production, :staging do
@@ -235,6 +235,9 @@ insert_into_file 'spec/spec_helper.rb',%(
 
   config.before :all do
     FactoryGirl.reload
+    FactoryGirl.factories.clear
+    FactoryGirl.sequences.clear
+    FactoryGirl.find_definitions
   end
 
   config.include FactoryGirl::Syntax::Methods
