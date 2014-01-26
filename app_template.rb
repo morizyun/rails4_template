@@ -251,7 +251,7 @@ run 'wget https://raw.github.com/jonleighton/spring/master/bin/spring -P bin/'
 run 'sudo chmod a+x bin/spring'
 
 # Guard
-run 'guard init'
+run 'bundle exec guard init'
 gsub_file 'Guardfile', 'guard :rspec do', "guard :rspec, cmd: 'spring rspec -f doc' do"
 
 # Errbit
