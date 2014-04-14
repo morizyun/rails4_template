@@ -205,214 +205,214 @@ run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/staging.rb -P config/unicorn/'
 run "echo 'web: bundle exec unicorn_rails -c config/unicorn/development.rb\ntest: bundle exec guard start' > Procfile"
 
-# # Rspec/Spring/Guard
-# # ----------------------------------------------------------------
-# # Rspec
-# generate 'rspec:install'
-# run "echo '--color --drb -f d' > .rspec"
-#
-# insert_into_file 'spec/spec_helper.rb',%(
-#   config.before :suite do
-#     DatabaseRewinder.clean_all
-#   end
-#
-#   config.after :each do
-#     DatabaseRewinder.clean
-#   end
-#
-#   config.before :all do
-#     FactoryGirl.reload
-#     FactoryGirl.factories.clear
-#     FactoryGirl.sequences.clear
-#     FactoryGirl.find_definitions
-#   end
-#
-#   config.include FactoryGirl::Syntax::Methods
-# ), after: 'RSpec.configure do |config|'
-#
-# insert_into_file 'spec/spec_helper.rb', "\nrequire 'factory_girl_rails'", after: "require 'rspec/rails'"
-# gsub_file 'spec/spec_helper.rb', "require 'rspec/autorun'", ''
-#
-# # Guard
-# run 'bundle exec guard init'
-# gsub_file 'Guardfile', 'guard :rspec do', "guard :rspec, cmd: 'spring rspec -f doc' do"
-#
-# # Errbit
-# # ----------------------------------------------------------------
-# if yes?('Use Errbit? [yes or ELSE]')
-#   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/errbit.rb -P config/initializers'
-#   run 'Register app to Errbit/Airbrake'
-#   key_value = ask('errbit key value?')
-#   gsub_file 'config/initializers/errbit.rb', /%KEY_VALUE/, key_value
-#   run "echo 'Please Change host name in config/initializers/errbit.rb'"
-# end
-#
-# # MongoDB
-# # ----------------------------------------------------------------
-# use_mongodb = if yes?('Use MongoDB? [yes or ELSE]')
-# append_file 'Gemfile', <<-CODE
-# \n# Mongoid
-# gem 'mongoid', '4.0.0.alpha1'
-# gem 'bson_ext'
-# gem 'origin'
-# gem 'moped'
-# CODE
-#
-# run 'bundle install'
-#
-# generate 'mongoid:config'
-#
-# append_file 'config/mongoid.yml', <<-CODE
-# production:
-#   sessions:
-#     default:
-#       uri: <%= ENV['MONGOLAB_URI'] %>
-# CODE
-#
-# append_file 'spec/spec_helper.rb', <<-CODE
-# require 'rails/mongoid'
-# CODE
-#
-# insert_into_file 'spec/spec_helper.rb',%(
-#   # Clean/Reset Mongoid DB prior to running each test.
-#   config.before(:each) do
-#     Mongoid::Sessions.default.collections.select {|c| c.name !~ /system/ }.each(&:drop)
-#   end
-# ), after: 'RSpec.configure do |config|'
-# end
-#
-# # Eventmachine
-# # ----------------------------------------------------------------
-# use_heroku_worker = if yes?('Use eventmachine(worker process)? [yes or ELSE]')
-# append_file 'Gemfile', <<-CODE
-# \n# EventMachine/Twitter Stream API
-# gem 'eventmachine'
-# gem 'tweetstream'
-# CODE
-#
-# run 'bundle install'
-#
-# run 'mkdir lib/eventmachine'
-# run 'wget https://raw.github.com/morizyun/rails4_template/master/lib/eventmachine/twitter_stream.rb -P lib/eventmachine/'
-#
-# append_file 'Procfile', <<-CODE
-# worker: bundle exec ruby lib/eventmachine/twitter_stream.rb
-# CODE
-#
-# tw_setting = %(
-#   TWITTER_CONSUMER_KEY:
-#   TWITTER_CONSUMER_SECRET:
-#   TWITTER_OAUTH_TOKEN:
-#   TWITTER_OAUTH_TOKEN_SECRET:)
-# insert_into_file 'config/application.yml', tw_setting, after: 'development:'
-# append_file 'config/application.yml', tw_setting
-# end
-#
-# # Redis
-# # ----------------------------------------------------------------
-# use_redis = if yes?('Use Redis? [yes or ELSE]')
-# append_file 'Gemfile', <<-CODE
-# \n# Redis
-# gem 'redis-objects'
-# gem 'redis-namespace'
-# CODE
-#
-# run 'bundle install'
-#
-# run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/redis.rb -P config/initializers/'
-# end
-#
-# # git init
-# # ----------------------------------------------------------------
-# git :init
-# git :add => '.'
-# git :commit => "-a -m 'first commit'"
-#
-# # heroku deploy
-# # ----------------------------------------------------------------
-# if yes?('Use Heroku? [yes or ELSE]')
-#   def heroku(cmd, arguments="")
-#     run "heroku #{cmd} #{arguments}"
-#   end
-#
-#   # herokuに不要なファイルを設定
-#   file '.slugignore', <<-EOS.gsub(/^  /, '')
-#   *.psd
-#   *.pdf
-#   test
-#   spec
-#   features
-#   doc
-#   docs
-#   EOS
-#
-#   git :add => '.'
-#   git :commit => "-a -m 'Configuration for heroku'"
-#
-#   heroku_app_name = @app_name.gsub('_', '-')
-#   heroku :create, "#{heroku_app_name}"
-#
-#   # config
-#   run 'heroku config:set SECRET_KEY_BASE=`rake secret`'
-#   run 'heroku config:add TZ=Asia/Tokyo'
-#
-#   # addons
-#   heroku :'addons:add', 'logentries'
-#   heroku :'addons:add', 'scheduler'
-#   heroku :'addons:add', 'mongolab' if use_mongodb
-#   heroku :'addons:add', 'rediscloud' if use_redis
-#
-#   git :push => 'heroku master'
-#   heroku :run, "rake db:migrate --app #{heroku_app_name}"
-#
-#   # scale worker
-#   if use_heroku_worker
-#     heroku 'scale web=0'
-#     heroku 'scale worker=1'
-#   end
-#
-#   # newrelic
-#   if yes?('Use newrelic?[yes or ELSE]')
-#     heroku :'addons:add', 'newrelic'
-#     heroku :'addons:open', 'newrelic'
-#     run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
-#     gsub_file 'config/newrelic.yml', /%APP_NAME/, @app_name
-#     key_value = ask('Newrelic licence key value?')
-#     gsub_file 'config/newrelic.yml', /%KEY_VALUE/, key_value
-#   end
-# end
-#
-# # Bitbucket
-# # ----------------------------------------------------------------
-# use_bitbucket = if yes?('Push Bitbucket? [yes or ELSE]')
-#   git_uri = `git config remote.origin.url`.strip
-#   if git_uri.size == 0
-#     username = ask 'What is your Bitbucket username?'
-#     password = ask 'What is your Bitbucket password?'
-#     run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{@app_name}&is_private=true'"
-#     git remote: "add origin git@bitbucket.org:#{username}/#{@app_name}.git"
-#     git push: 'origin master'
-#   else
-#     say 'Repository already exists:'
-#     say "#{git_uri}"
-#   end
-#   true
-# else
-#   false
-# end
-#
-# # GitHub
-# # ----------------------------------------------------------------
-# if !use_bitbucket and yes?('Push GitHub? [yes or ELSE]')
-#   git_uri = `git config remote.origin.url`.strip
-#   unless git_uri.size == 0
-#     say 'Repository already exists:'
-#     say "#{git_uri}"
-#   else
-#     email = ask 'What is your GitHub login E-Mail address?'
-#     run "curl -u #{email} -d '{\"name\":\"#{@app_name}\"}' https://api.github.com/user/repos"
-#     username = ask 'What is your GitHub username?'
-#     git remote: %Q{ add origin git@github.com:#{username}/#{@app_name}.git }
-#     git push: %Q{ origin master }
-#   end
-# end
+# Rspec/Spring/Guard
+# ----------------------------------------------------------------
+# Rspec
+generate 'rspec:install'
+run "echo '--color --drb -f d' > .rspec"
+
+insert_into_file 'spec/spec_helper.rb',%(
+  config.before :suite do
+    DatabaseRewinder.clean_all
+  end
+
+  config.after :each do
+    DatabaseRewinder.clean
+  end
+
+  config.before :all do
+    FactoryGirl.reload
+    FactoryGirl.factories.clear
+    FactoryGirl.sequences.clear
+    FactoryGirl.find_definitions
+  end
+
+  config.include FactoryGirl::Syntax::Methods
+), after: 'RSpec.configure do |config|'
+
+insert_into_file 'spec/spec_helper.rb', "\nrequire 'factory_girl_rails'", after: "require 'rspec/rails'"
+gsub_file 'spec/spec_helper.rb', "require 'rspec/autorun'", ''
+
+# Guard
+run 'bundle exec guard init'
+gsub_file 'Guardfile', 'guard :rspec do', "guard :rspec, cmd: 'spring rspec -f doc' do"
+
+# Errbit
+# ----------------------------------------------------------------
+if yes?('Use Errbit? [yes or ELSE]')
+  run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/errbit.rb -P config/initializers'
+  run 'Register app to Errbit/Airbrake'
+  key_value = ask('errbit key value?')
+  gsub_file 'config/initializers/errbit.rb', /%KEY_VALUE/, key_value
+  run "echo 'Please Change host name in config/initializers/errbit.rb'"
+end
+
+# MongoDB
+# ----------------------------------------------------------------
+use_mongodb = if yes?('Use MongoDB? [yes or ELSE]')
+append_file 'Gemfile', <<-CODE
+\n# Mongoid
+gem 'mongoid', '4.0.0.alpha1'
+gem 'bson_ext'
+gem 'origin'
+gem 'moped'
+CODE
+
+run 'bundle install'
+
+generate 'mongoid:config'
+
+append_file 'config/mongoid.yml', <<-CODE
+production:
+  sessions:
+    default:
+      uri: <%= ENV['MONGOLAB_URI'] %>
+CODE
+
+append_file 'spec/spec_helper.rb', <<-CODE
+require 'rails/mongoid'
+CODE
+
+insert_into_file 'spec/spec_helper.rb',%(
+  # Clean/Reset Mongoid DB prior to running each test.
+  config.before(:each) do
+    Mongoid::Sessions.default.collections.select {|c| c.name !~ /system/ }.each(&:drop)
+  end
+), after: 'RSpec.configure do |config|'
+end
+
+# Eventmachine
+# ----------------------------------------------------------------
+use_heroku_worker = if yes?('Use eventmachine(worker process)? [yes or ELSE]')
+append_file 'Gemfile', <<-CODE
+\n# EventMachine/Twitter Stream API
+gem 'eventmachine'
+gem 'tweetstream'
+CODE
+
+run 'bundle install'
+
+run 'mkdir lib/eventmachine'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/lib/eventmachine/twitter_stream.rb -P lib/eventmachine/'
+
+append_file 'Procfile', <<-CODE
+worker: bundle exec ruby lib/eventmachine/twitter_stream.rb
+CODE
+
+tw_setting = %(
+  TWITTER_CONSUMER_KEY:
+  TWITTER_CONSUMER_SECRET:
+  TWITTER_OAUTH_TOKEN:
+  TWITTER_OAUTH_TOKEN_SECRET:)
+insert_into_file 'config/application.yml', tw_setting, after: 'development:'
+append_file 'config/application.yml', tw_setting
+end
+
+# Redis
+# ----------------------------------------------------------------
+use_redis = if yes?('Use Redis? [yes or ELSE]')
+append_file 'Gemfile', <<-CODE
+\n# Redis
+gem 'redis-objects'
+gem 'redis-namespace'
+CODE
+
+run 'bundle install'
+
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/redis.rb -P config/initializers/'
+end
+
+# git init
+# ----------------------------------------------------------------
+git :init
+git :add => '.'
+git :commit => "-a -m 'first commit'"
+
+# heroku deploy
+# ----------------------------------------------------------------
+if yes?('Use Heroku? [yes or ELSE]')
+  def heroku(cmd, arguments="")
+    run "heroku #{cmd} #{arguments}"
+  end
+
+  # herokuに不要なファイルを設定
+  file '.slugignore', <<-EOS.gsub(/^  /, '')
+  *.psd
+  *.pdf
+  test
+  spec
+  features
+  doc
+  docs
+  EOS
+
+  git :add => '.'
+  git :commit => "-a -m 'Configuration for heroku'"
+
+  heroku_app_name = @app_name.gsub('_', '-')
+  heroku :create, "#{heroku_app_name}"
+
+  # config
+  run 'heroku config:set SECRET_KEY_BASE=`rake secret`'
+  run 'heroku config:add TZ=Asia/Tokyo'
+
+  # addons
+  heroku :'addons:add', 'logentries'
+  heroku :'addons:add', 'scheduler'
+  heroku :'addons:add', 'mongolab' if use_mongodb
+  heroku :'addons:add', 'rediscloud' if use_redis
+
+  git :push => 'heroku master'
+  heroku :run, "rake db:migrate --app #{heroku_app_name}"
+
+  # scale worker
+  if use_heroku_worker
+    heroku 'scale web=0'
+    heroku 'scale worker=1'
+  end
+
+  # newrelic
+  if yes?('Use newrelic?[yes or ELSE]')
+    heroku :'addons:add', 'newrelic'
+    heroku :'addons:open', 'newrelic'
+    run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
+    gsub_file 'config/newrelic.yml', /%APP_NAME/, @app_name
+    key_value = ask('Newrelic licence key value?')
+    gsub_file 'config/newrelic.yml', /%KEY_VALUE/, key_value
+  end
+end
+
+# Bitbucket
+# ----------------------------------------------------------------
+use_bitbucket = if yes?('Push Bitbucket? [yes or ELSE]')
+  git_uri = `git config remote.origin.url`.strip
+  if git_uri.size == 0
+    username = ask 'What is your Bitbucket username?'
+    password = ask 'What is your Bitbucket password?'
+    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{@app_name}&is_private=true'"
+    git remote: "add origin git@bitbucket.org:#{username}/#{@app_name}.git"
+    git push: 'origin master'
+  else
+    say 'Repository already exists:'
+    say "#{git_uri}"
+  end
+  true
+else
+  false
+end
+
+# GitHub
+# ----------------------------------------------------------------
+if !use_bitbucket and yes?('Push GitHub? [yes or ELSE]')
+  git_uri = `git config remote.origin.url`.strip
+  unless git_uri.size == 0
+    say 'Repository already exists:'
+    say "#{git_uri}"
+  else
+    email = ask 'What is your GitHub login E-Mail address?'
+    run "curl -u #{email} -d '{\"name\":\"#{@app_name}\"}' https://api.github.com/user/repos"
+    username = ask 'What is your GitHub username?'
+    git remote: %Q{ add origin git@github.com:#{username}/#{@app_name}.git }
+    git push: %Q{ origin master }
+  end
+end
