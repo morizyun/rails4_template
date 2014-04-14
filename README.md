@@ -2,7 +2,7 @@
 
 Rails4 Application Template. - [Rails Application Templates — Ruby on Rails Guides](http://guides.rubyonrails.org/rails_application_templates.html)
 
-It's easy to start Rails4 x Heroku application.
+It's easy to start Rails4 x PosgreSQL/MySQL application.
 
 In addition, you can choose following options;
 
@@ -23,9 +23,13 @@ I recommend to install gibo before generating Rails project. - [simonwhitaker/gi
 
 ## Execution Command
 
-Execute following command:
+Execute following command for PostgreSQL:
 
     rails new test_app --database=postgresql --skip-test-unit --skip-bundle -m https://raw.github.com/morizyun/rails4_template/master/app_template.rb
+
+Execute following command for MySQL:
+
+    rails new test_app --database=mysql --skip-test-unit --skip-bundle -m https://raw.github.com/morizyun/rails4_template/master/app_template.rb
 
 Caution: Please don't use '-' in application name.
 

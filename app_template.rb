@@ -203,7 +203,7 @@ run 'mkdir config/unicorn'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/development.rb -P config/unicorn/'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/production.rb -P config/unicorn/'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/staging.rb -P config/unicorn/'
-run "echo 'web: bundle exec unicorn_rails -c config/unicorn/development.rb¥ntest: bundle exec guard start' > Procfile"
+run "echo 'web: bundle exec unicorn_rails -c config/unicorn/development.rb\ntest: bundle exec guard start' > Procfile"
 
 # # Rspec/Spring/Guard
 # # ----------------------------------------------------------------
