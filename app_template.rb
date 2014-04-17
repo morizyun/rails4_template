@@ -80,7 +80,6 @@ group :development, :test do
   gem 'pry-rails'
   gem 'pry-coolline'
   gem 'pry-byebug'
-  gem 'pry-exception_explorer'
   gem 'pry-stack_explorer'
   gem 'rb-readline'
 
