@@ -76,17 +76,13 @@ group :development do
 end
 
 group :development, :test do
-  # Railsコンソールの多機能版
+  # Pry & extensions
   gem 'pry-rails'
-
-  # pryの入力に色付け
   gem 'pry-coolline'
-
-  # デバッカー
   gem 'pry-byebug'
-
-  # Pryでの便利コマンド
-  gem 'pry-doc'
+  gem 'pry-exception_explorer'
+  gem 'pry-stack_explorer'
+  gem 'rb-readline'
 
   # PryでのSQLの結果を綺麗に表示
   gem 'hirb'
@@ -188,7 +184,7 @@ generate 'kaminari:config'
 
 # Database
 run 'rm -rf config/database.yml'
-if yes?('Use MySQL[yes] else PostgreSQL')
+if yes?('Use MySQL?([yes] else PostgreSQL)')
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/mysql/database.yml -P config/'
 else
   run 'wget https://raw.github.com/morizyun/rails4_template/master/config/postgresql/database.yml -P config/'
