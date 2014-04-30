@@ -7,6 +7,7 @@ run 'rm README.rdoc'
 # .gitignore
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore' rescue nil
 gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
+gsub_file '.gitignore', /^config\/secret.yml$/, ''
 
 # add to Gemfile
 append_file 'Gemfile', <<-CODE
@@ -53,7 +54,6 @@ gem 'migrant'
 
 # Pagenation
 gem 'kaminari'
-gem 'bootstrap-kaminari-views'
 
 # NewRelic
 gem 'newrelic_rpm'
@@ -69,6 +69,16 @@ gem 'figaro'
 
 # Hash extensions
 gem 'hashie'
+
+# Twitter Bootstrap
+gem 'twitter-bootswatch-rails', '~> 3.1.1'
+gem 'twitter-bootswatch-rails-helpers'
+
+# Settings
+gem 'settingslogic'
+
+# Cron Manage
+gem 'whenever', require: false
 
 group :development do
   # Converter erb => haml
@@ -92,7 +102,6 @@ group :development, :test do
 
   # Rspec
   gem 'rspec-rails'
-  gem 'rake_shared_context'
 
   # fixtureの代わり
   gem "factory_girl_rails"
@@ -100,12 +109,27 @@ group :development, :test do
   # テスト環境のテーブルをきれいにする
   gem 'database_rewinder'
 
-  # Guard
-  gem 'guard-rspec'
-  gem 'guard-spring'
+  # Feature Test
+  gem 'capybara'
+
+  # Time Mock
+  gem 'timecop'
+
+  # Deploy
+  gem 'capistrano', '~> 3.2.1'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-bundler'
+  gem 'capistrano3-unicorn'
 
   # Rack Profiler
-  gem 'rack-mini-profiler'
+  # gem 'rack-mini-profiler'
+end
+
+group :test do
+  # HTTP requests用のモックアップを作ってくれる
+  gem 'webmock'
+  gem 'vcr'
 end
 
 group :production, :staging do
@@ -170,13 +194,15 @@ insert_into_file 'app/views/layouts/application.html.haml',%(
 # Simple Form
 generate 'simple_form:install --bootstrap'
 
-# Figaro
-append_file '.gitignore', <<-FILE
-  config/application.yml
-FILE
+# Whenever
+run 'wheneverize .'
 
+# Capistrano
+run 'bundle exec cap install'
+
+# Setting Logic
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/application.yml -P config/'
-gsub_file 'config/application.yml', /%APP_NAME/, @app_name
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/settings.rb -P config/initializers/'
 
 # Kaminari config
 generate 'kaminari:config'

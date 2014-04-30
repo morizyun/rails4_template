@@ -1,6 +1,17 @@
+defaults: &defaults
+
+
 development:
-  hello: 'user'
+  <<: *defaults
+
+
 test:
-  hello: 'tester'
+  <<: *defaults
+
+
+staging:
+  <<: *defaults
+
+
 production:
-  hello: 'world'
+  <<: *defaults
