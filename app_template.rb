@@ -13,9 +13,6 @@ gsub_file '.gitignore', /^config\/secret.yml$/, ''
 append_file 'Gemfile', <<-CODE
 ruby '2.1.0'
 
-# Bower Manager => https://rails-assets.org/
-source 'https://rails-assets.org'
-
 # turbolinks support
 gem 'jquery-turbolinks'
 
@@ -27,9 +24,6 @@ gem 'less-rails'
 
 # App Server
 gem 'unicorn'
-
-# Presenter Layer
-gem 'draper'
 
 # Haml
 gem 'haml-rails'
@@ -48,9 +42,6 @@ gem 'html5_validators'
 
 # PG/MySQL Log Formatter
 gem 'rails-flog'
-
-# Migration Helper
-gem 'migrant'
 
 # Pagenation
 gem 'kaminari'
@@ -115,6 +106,10 @@ group :development, :test do
   # Time Mock
   gem 'timecop'
 
+  # Guard
+  gem 'guard-rspec'
+  gem 'guard-spring'
+
   # Deploy
   gem 'capistrano', '~> 3.2.1'
   gem 'capistrano-rails'
@@ -160,7 +155,7 @@ application  do
       g.test_framework  :rspec, :fixture => true
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
       g.view_specs false
-      g.controller_specs false
+      g.controller_specs true
       g.routing_specs false
       g.helper_specs false
       g.request_specs false
