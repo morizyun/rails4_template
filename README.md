@@ -6,12 +6,12 @@ It's easy to start Rails4 x PosgreSQL/MySQL application.
 
 In addition, you can choose following options;
 
-1) Errbit
-2) MongoDB
-3) EventMachine
-4) Redis
-5) Heroku Push
-6) Bitbucket/GitHub Repository Create&Push
+1) Errbit<br/>
+2) MongoDB<br/>
+3) EventMachine<br/>
+4) Redis<br/>
+5) Heroku Push<br/>
+6) Bitbucket/GitHub Repository Create&Push<br/>
 
 ## Reparation
 
