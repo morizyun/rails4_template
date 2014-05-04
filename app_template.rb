@@ -7,7 +7,7 @@ run 'rm README.rdoc'
 # .gitignore
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore' rescue nil
 gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
-gsub_file '.gitignore', /^config\/secret.yml$/, ''
+gsub_file '.gitignore', /config\/secret.yml/, ''
 
 # add to Gemfile
 append_file 'Gemfile', <<-CODE
@@ -217,9 +217,10 @@ run 'bundle exec rake RAILS_ENV=development db:create'
 # Unicorn(App Server)
 run 'mkdir config/unicorn'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/development.rb -P config/unicorn/'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/heroku.rb -P config/unicorn/'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/production.rb -P config/unicorn/'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/staging.rb -P config/unicorn/'
-run "echo 'web: bundle exec unicorn_rails -c config/unicorn/development.rb\ntest: bundle exec guard start' > Procfile"
+run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn/heroku.rb' > Procfile"
 
 # Rspec/Spring/Guard
 # ----------------------------------------------------------------
