@@ -42,8 +42,7 @@ Japanese explanation in this template is as follows;
 ## Supported versions
 
 - Ruby 2.1.0
-- Rails 4.0.2
-- Mac OSX 10.8.5(Mountain Lion)
+- Rails 4.1.0
 
 ## Contributing
 
