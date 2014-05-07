@@ -245,6 +245,12 @@ insert_into_file 'spec/spec_helper.rb',%(
   end
 
   config.include FactoryGirl::Syntax::Methods
+
+  VCR.configure do |c|
+      c.cassette_library_dir = 'spec/vcr'
+      c.hook_into :webmock
+      c.allow_http_connections_when_no_cassette = true
+  end
 ), after: 'RSpec.configure do |config|'
 
 insert_into_file 'spec/spec_helper.rb', "\nrequire 'factory_girl_rails'", after: "require 'rspec/rails'"
