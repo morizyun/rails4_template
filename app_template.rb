@@ -226,7 +226,7 @@ run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn/heroku.rb' > Pr
 # ----------------------------------------------------------------
 # Rspec
 generate 'rspec:install'
-run "echo '--color --drb -f d' > .rspec"
+run "echo '--color -f d' > .rspec"
 
 insert_into_file 'spec/spec_helper.rb',%(
   config.before :suite do
