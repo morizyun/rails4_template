@@ -11,7 +11,6 @@ gsub_file '.gitignore', /config\/secret.yml/, ''
 
 # add to Gemfile
 append_file 'Gemfile', <<-CODE
-ruby '2.1.0'
 
 # turbolinks support
 gem 'jquery-turbolinks'
