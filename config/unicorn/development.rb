@@ -9,6 +9,8 @@ stdout_path File.expand_path('log/development.log', ENV['RAILS_ROOT'])
 preload_app true
 
 before_fork do |server, worker|
+  ENV['BUNDLE_GEMFILE'] = "#{ENV['RAILS_ROOT']}/Gemfile"
+
   defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
 
   old_pid = "#{ server.config[:pid] }.oldbin"
