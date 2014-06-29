@@ -70,6 +70,9 @@ gem 'settingslogic'
 # Cron Manage
 gem 'whenever', require: false
 
+# Presenter Layer Helper
+gem 'active_decorator'
+
 group :development do
   # Converter erb => haml
   gem 'erb2haml'
