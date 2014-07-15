@@ -105,6 +105,10 @@ group :development, :test do
   # Feature Test
   gem 'capybara'
 
+  # Coverage
+  gem 'simplecov'
+  gem 'simplecov-rcov'
+
   # Time Mock
   gem 'timecop'
 
@@ -253,6 +257,12 @@ insert_into_file 'spec/spec_helper.rb',%(
       c.hook_into :webmock
       c.allow_http_connections_when_no_cassette = true
   end
+
+  # code coverage
+  require 'simplecov'
+  require 'simplecov-rcov'
+  SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+  SimpleCov.start 'rails'
 ), after: 'RSpec.configure do |config|'
 
 insert_into_file 'spec/spec_helper.rb', "\nrequire 'factory_girl_rails'", after: "require 'rspec/rails'"
