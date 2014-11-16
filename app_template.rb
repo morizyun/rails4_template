@@ -60,10 +60,6 @@ gem 'figaro'
 # Hash extensions
 gem 'hashie'
 
-# Twitter Bootstrap
-gem 'twitter-bootswatch-rails', '~> 3.1.1'
-gem 'twitter-bootswatch-rails-helpers'
-
 # Settings
 gem 'settingslogic'
 
@@ -96,25 +92,14 @@ group :development, :test do
   # Rspec
   gem 'rspec-rails'
 
-  # fixtureの代わり
-  gem "factory_girl_rails"
+  # test fixture
+  gem 'factory_girl_rails'
 
   # テスト環境のテーブルをきれいにする
   gem 'database_rewinder'
 
-  # Feature Test
-  gem 'capybara'
-
-  # Coverage
-  gem 'simplecov'
-  gem 'simplecov-rcov'
-
   # Time Mock
   gem 'timecop'
-
-  # Guard
-  gem 'guard-rspec'
-  gem 'guard-spring'
 
   # Deploy
   gem 'capistrano', '~> 3.2.1'
@@ -257,30 +242,10 @@ insert_into_file 'spec/spec_helper.rb',%(
       c.hook_into :webmock
       c.allow_http_connections_when_no_cassette = true
   end
-
-  # code coverage
-  require 'simplecov'
-  require 'simplecov-rcov'
-  SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
-  SimpleCov.start 'rails'
 ), after: 'RSpec.configure do |config|'
 
 insert_into_file 'spec/spec_helper.rb', "\nrequire 'factory_girl_rails'", after: "require 'rspec/rails'"
 gsub_file 'spec/spec_helper.rb', "require 'rspec/autorun'", ''
-
-# Guard
-run 'bundle exec guard init'
-gsub_file 'Guardfile', 'guard :rspec do', "guard :rspec, cmd: 'spring rspec -f doc' do"
-
-# Errbit
-# ----------------------------------------------------------------
-if yes?('Use Errbit? [yes or ELSE]')
-  run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/errbit.rb -P config/initializers'
-  run 'Register app to Errbit/Airbrake'
-  key_value = ask('errbit key value?')
-  gsub_file 'config/initializers/errbit.rb', /%KEY_VALUE/, key_value
-  run "echo 'Please Change host name in config/initializers/errbit.rb'"
-end
 
 # MongoDB
 # ----------------------------------------------------------------
@@ -314,33 +279,6 @@ insert_into_file 'spec/spec_helper.rb',%(
     Mongoid::Sessions.default.collections.select {|c| c.name !~ /system/ }.each(&:drop)
   end
 ), after: 'RSpec.configure do |config|'
-end
-
-# Eventmachine
-# ----------------------------------------------------------------
-use_heroku_worker = if yes?('Use eventmachine(worker process)? [yes or ELSE]')
-append_file 'Gemfile', <<-CODE
-\n# EventMachine/Twitter Stream API
-gem 'eventmachine'
-gem 'tweetstream'
-CODE
-
-run 'bundle install'
-
-run 'mkdir lib/eventmachine'
-run 'wget https://raw.github.com/morizyun/rails4_template/master/lib/eventmachine/twitter_stream.rb -P lib/eventmachine/'
-
-append_file 'Procfile', <<-CODE
-worker: bundle exec ruby lib/eventmachine/twitter_stream.rb
-CODE
-
-tw_setting = %(
-  TWITTER_CONSUMER_KEY:
-  TWITTER_CONSUMER_SECRET:
-  TWITTER_OAUTH_TOKEN:
-  TWITTER_OAUTH_TOKEN_SECRET:)
-insert_into_file 'config/application.yml', tw_setting, after: 'development:'
-append_file 'config/application.yml', tw_setting
 end
 
 # Redis
@@ -414,40 +352,5 @@ if yes?('Use Heroku? [yes or ELSE]')
     gsub_file 'config/newrelic.yml', /%APP_NAME/, @app_name
     key_value = ask('Newrelic licence key value?')
     gsub_file 'config/newrelic.yml', /%KEY_VALUE/, key_value
-  end
-end
-
-# Bitbucket
-# ----------------------------------------------------------------
-use_bitbucket = if yes?('Push Bitbucket? [yes or ELSE]')
-  git_uri = `git config remote.origin.url`.strip
-  if git_uri.size == 0
-    username = ask 'What is your Bitbucket username?'
-    password = ask 'What is your Bitbucket password?'
-    run "curl -k -X POST --user #{username}:#{password} 'https://api.bitbucket.org/1.0/repositories' -d 'name=#{@app_name}&is_private=true'"
-    git remote: "add origin git@bitbucket.org:#{username}/#{@app_name}.git"
-    git push: 'origin master'
-  else
-    say 'Repository already exists:'
-    say "#{git_uri}"
-  end
-  true
-else
-  false
-end
-
-# GitHub
-# ----------------------------------------------------------------
-if !use_bitbucket and yes?('Push GitHub? [yes or ELSE]')
-  git_uri = `git config remote.origin.url`.strip
-  unless git_uri.size == 0
-    say 'Repository already exists:'
-    say "#{git_uri}"
-  else
-    email = ask 'What is your GitHub login E-Mail address?'
-    run "curl -u #{email} -d '{\"name\":\"#{@app_name}\"}' https://api.github.com/user/repos"
-    username = ask 'What is your GitHub username?'
-    git remote: %Q{ add origin git@github.com:#{username}/#{@app_name}.git }
-    git push: %Q{ origin master }
   end
 end
