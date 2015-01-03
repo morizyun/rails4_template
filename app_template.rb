@@ -24,8 +24,8 @@ gem 'less-rails'
 # App Server
 gem 'unicorn'
 
-# Haml
-gem 'haml-rails'
+# Slim
+gem 'slim-rails'
 
 # Assets log cleaner
 gem 'quiet_assets'
@@ -54,9 +54,6 @@ gem 'airbrake'
 # HTML Parser
 gem 'nokogiri'
 
-# App configuration
-gem 'figaro'
-
 # Hash extensions
 gem 'hashie'
 
@@ -70,8 +67,7 @@ gem 'whenever', require: false
 gem 'active_decorator'
 
 group :development do
-  # Converter erb => haml
-  gem 'erb2haml'
+  gem 'html2slim'
 end
 
 group :development, :test do
@@ -125,7 +121,7 @@ end
 CODE
 
 # install gems
-run 'bundle install'
+run 'bundle install --path vendor/bundle --jobs=4'
 
 # set config/application.rb
 application  do
@@ -142,7 +138,7 @@ application  do
     # generatorの設定
     config.generators do |g|
       g.orm :active_record
-      g.template_engine :haml
+      g.template_engine :slim
       g.test_framework  :rspec, :fixture => true
       g.fixture_replacement :factory_girl, :dir => "spec/factories"
       g.view_specs false
@@ -168,13 +164,13 @@ run 'rm -rf app/assets/javascripts/application.js'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/javascripts/application.js -P app/assets/javascripts/'
 
 # HAML
-run 'rake haml:replace_erbs'
+run 'bundle exec erb2slim -d app/views'
 
 # Bootstrap/Bootswach/Font-Awaresome
-insert_into_file 'app/views/layouts/application.html.haml',%(
-%script{:src=>'//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js'}
-%link{:href=>'//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', :rel=>'stylesheet'}
-%link{:href=>'//netdna.bootstrapcdn.com/bootswatch/3.0.3/simplex/bootstrap.min.css', :rel=>'stylesheet'}
+insert_into_file 'app/views/layouts/application.html.slim',%(
+script{:src=>'//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js'}
+link{:href=>'//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', :rel=>'stylesheet'}
+link{:href=>'//netdna.bootstrapcdn.com/bootswatch/3.0.3/simplex/bootstrap.min.css', :rel=>'stylesheet'}
 ), after: '= csrf_meta_tags'
 
 # Simple Form
