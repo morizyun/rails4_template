@@ -180,15 +180,15 @@ insert_into_file 'config/environments/development.rb',%(
 run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
 
 # application.js(turbolink setting)
-run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/javascripts/application.js -P app/assets/javascripts/'
 run 'rm -rf app/assets/javascripts/application.js'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/javascripts/application.js -P app/assets/javascripts/'
 
 # erb => slim
 run 'bundle exec erb2slim -d app/views'
 
 # Bootstrap/Bootswach/Font-Awesome
-run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/stylesheets/application.css.scss -P app/assets/stylesheets/'
 run 'rm -rf app/assets/stylesheets/application.css'
+run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/stylesheets/application.css.scss -P app/assets/stylesheets/'
 
 # Simple Form
 generate 'simple_form:install --bootstrap'

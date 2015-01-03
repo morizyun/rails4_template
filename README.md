@@ -1,4 +1,4 @@
-# Rails4 Application Template
+# Rails4 application template
 
 Rails4 Application Template. - [Rails Application Templates — Ruby on Rails Guides](http://guides.rubyonrails.org/rails_application_templates.html)
 
@@ -8,10 +8,8 @@ In addition, you can choose following options;
 
 1) Errbit<br/>
 2) MongoDB<br/>
-3) EventMachine<br/>
-4) Redis<br/>
-5) Heroku Push<br/>
-6) Bitbucket/GitHub Repository Create&Push<br/>
+3) Redis<br/>
+4) Heroku Push<br/>
 
 ## Reparation
 
@@ -21,7 +19,7 @@ I recommend to install gibo before generating Rails project. - [simonwhitaker/gi
 
     brew install gibo
 
-## Execution Command
+## Execution command
 
 Execute following command for PostgreSQL:
 
@@ -33,16 +31,16 @@ Execute following command for MySQL:
 
 Caution: Please don't use '-' in application name.
 
-## Detail Explanation
+## Detail explanation
 
-Japanese explanation in this template is as follows;
+Description of this template in Japanese is as follows;
 
 - [Rails4でheroku Pushまでの最短手順 [haml/bootstrap 3.0/postgresql or MySQL] - 酒と泪とRubyとRailsと](http://morizyun.github.io/blog/heroku-rails4-postgresql-introduction/)
 
 ## Supported versions
 
-- Ruby 2.1.0
-- Rails 4.1.0
+- Ruby 2.2.0
+- Rails 4.2.0
 
 ## Contributing
 
