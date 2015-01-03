@@ -86,7 +86,6 @@ group :development, :test do
   gem 'pry-rails'
   gem 'pry-coolline'
   gem 'pry-byebug'
-  gem 'pry-stack_explorer'
   gem 'rb-readline'
 
   # PryでのSQLの結果を綺麗に表示
