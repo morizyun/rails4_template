@@ -12,6 +12,11 @@ gsub_file '.gitignore', /config\/secret.yml/, ''
 # add to Gemfile
 append_file 'Gemfile', <<-CODE
 
+# Bootstrap & Bootswatch & font-awesome
+gem 'bootstrap-sass'
+gem 'bootswatch-rails'
+gem 'font-awesome-rails'
+
 # turbolinks support
 gem 'jquery-turbolinks'
 
@@ -68,6 +73,12 @@ gem 'active_decorator'
 
 group :development do
   gem 'html2slim'
+
+  # N+1問題の検出
+  gem 'bullet'
+
+  # Rack Profiler
+  # gem 'rack-mini-profiler'
 end
 
 group :development, :test do
@@ -103,9 +114,6 @@ group :development, :test do
   gem 'capistrano-rbenv'
   gem 'capistrano-bundler'
   gem 'capistrano3-unicorn'
-
-  # Rack Profiler
-  # gem 'rack-mini-profiler'
 end
 
 group :test do
@@ -156,22 +164,31 @@ application  do
   }
 end
 
+# For Bullet (N+1 Problem)
+insert_into_file 'config/environments/development.rb',%(
+  # Bulletの設定
+  config.after_initialize do
+    Bullet.enable = true # Bulletプラグインを有効
+    Bullet.alert = true # JavaScriptでの通知
+    Bullet.bullet_logger = true # log/bullet.logへの出力
+    Bullet.console = true # ブラウザのコンソールログに記録
+    Bullet.rails_logger = true # Railsログに出力
+  end
+), after: 'config.assets.debug = true'
+
 # set Japanese locale
 run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
 
 # application.js(turbolink setting)
-run 'rm -rf app/assets/javascripts/application.js'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/javascripts/application.js -P app/assets/javascripts/'
+run 'rm -rf app/assets/javascripts/application.js'
 
-# HAML
+# erb => slim
 run 'bundle exec erb2slim -d app/views'
 
-# Bootstrap/Bootswach/Font-Awaresome
-insert_into_file 'app/views/layouts/application.html.slim',%(
-script{:src=>'//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js'}
-link{:href=>'//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css', :rel=>'stylesheet'}
-link{:href=>'//netdna.bootstrapcdn.com/bootswatch/3.0.3/simplex/bootstrap.min.css', :rel=>'stylesheet'}
-), after: '= csrf_meta_tags'
+# Bootstrap/Bootswach/Font-Awesome
+run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/stylesheets/application.css.scss -P app/assets/stylesheets/'
+run 'rm -rf app/assets/stylesheets/application.css'
 
 # Simple Form
 generate 'simple_form:install --bootstrap'
