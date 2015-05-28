@@ -39,8 +39,8 @@ Description of this template in Japanese is as follows;
 
 ## Supported versions
 
-- Ruby 2.2.0
-- Rails 4.2.0
+- Ruby 2.2.2
+- Rails 4.2.1
 
 ## Contributing
 
