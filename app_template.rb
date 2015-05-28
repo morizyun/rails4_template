@@ -350,12 +350,6 @@ if yes?('Use Heroku? [yes or ELSE]')
   git :push => 'heroku master'
   heroku :run, "rake db:migrate --app #{heroku_app_name}"
 
-  # scale worker
-  if use_heroku_worker
-    heroku 'scale web=0'
-    heroku 'scale worker=1'
-  end
-
   # newrelic
   if yes?('Use newrelic?[yes or ELSE]')
     heroku :'addons:add', 'newrelic'
