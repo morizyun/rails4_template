@@ -342,17 +342,17 @@ if yes?('Use Heroku? [yes or ELSE]')
   run 'heroku config:add TZ=Asia/Tokyo'
 
   # addons
-  heroku :'addons:add', 'logentries'
-  heroku :'addons:add', 'scheduler'
-  heroku :'addons:add', 'mongolab' if use_mongodb
-  heroku :'addons:add', 'rediscloud' if use_redis
+  heroku :'addons:create', 'logentries'
+  heroku :'addons:create', 'scheduler'
+  heroku :'addons:create', 'mongolab' if use_mongodb
+  heroku :'addons:create', 'rediscloud' if use_redis
 
   git :push => 'heroku master'
   heroku :run, "rake db:migrate --app #{heroku_app_name}"
 
   # newrelic
   if yes?('Use newrelic?[yes or ELSE]')
-    heroku :'addons:add', 'newrelic'
+    heroku :'addons:create', 'newrelic'
     heroku :'addons:open', 'newrelic'
     run 'wget https://raw.github.com/morizyun/rails4_template/master/config/newrelic.yml -P config/'
     gsub_file 'config/newrelic.yml', /%APP_NAME/, @app_name
