@@ -4,6 +4,9 @@
 # clean file
 run 'rm README.rdoc'
 
+# move current dir
+run "cd #{@app_name}"
+
 # .gitignore
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore' rescue nil
 gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
@@ -338,7 +341,7 @@ if yes?('Use Heroku? [yes or ELSE]')
   heroku :create, "#{heroku_app_name}"
 
   # config
-  run 'heroku config:set SECRET_KEY_BASE=`rake secret`'
+  run 'heroku config:add SECRET_KEY_BASE=`rake secret`'
   run 'heroku config:add TZ=Asia/Tokyo'
 
   # addons
