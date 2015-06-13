@@ -129,7 +129,7 @@ end
 CODE
 
 # install gems
-run "cd #{@app_name} && bundle install --path vendor/bundle --jobs=4'
+run "cd #{@app_name} && bundle install --path vendor/bundle --jobs=4"
 
 # set config/application.rb
 application  do
