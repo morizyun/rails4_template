@@ -1,3 +1,5 @@
+require 'bundler'
+
 # アプリ名の取得
 @app_name = app_name
 
@@ -10,7 +12,6 @@ gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
 gsub_file '.gitignore', /config\/secret.yml/, ''
 
 # add to Gemfile
-run 'touch Gemfile'
 append_file 'Gemfile', <<-CODE
 
 # Bootstrap & Bootswatch & font-awesome
@@ -129,7 +130,11 @@ end
 CODE
 
 # install gems
-run "cd #{@app_name} && bundle install --path vendor/bundle --jobs=4"
+run './bin/bundle install'
+
+Bundler.with_clean_env do
+  run 'bundle install --path vendor/bundle --jobs=4'
+end
 
 # set config/application.rb
 application  do
