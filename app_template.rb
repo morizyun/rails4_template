@@ -43,9 +43,6 @@ gem 'simple_form'
 # # Process Management
 gem 'foreman'
 
-# HTML5 Validator
-gem 'html5_validators'
-
 # PG/MySQL Log Formatter
 gem 'rails-flog'
 
@@ -186,7 +183,9 @@ run 'rm -rf app/assets/javascripts/application.js'
 run 'wget https://raw.github.com/morizyun/rails4_template/master/app/assets/javascripts/application.js -P app/assets/javascripts/'
 
 # erb => slim
-run 'bundle exec erb2slim -d app/views'
+Bundler.with_clean_env do
+  run 'bundle exec erb2slim -d app/views'
+end
 
 # Bootstrap/Bootswach/Font-Awesome
 run 'rm -rf app/assets/stylesheets/application.css'
@@ -199,7 +198,9 @@ generate 'simple_form:install --bootstrap'
 run 'wheneverize .'
 
 # Capistrano
-run 'bundle exec cap install'
+Bundler.with_clean_env do
+  run 'bundle exec cap install'
+end
 
 # Setting Logic
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/application.yml -P config/'
@@ -218,7 +219,9 @@ else
 end
 
 gsub_file 'config/database.yml', /APPNAME/, @app_name
-run 'bundle exec rake RAILS_ENV=development db:create'
+Bundler.with_clean_env do
+  run 'bundle exec rake RAILS_ENV=development db:create'
+end
 
 # Unicorn(App Server)
 run 'mkdir config/unicorn'
@@ -273,7 +276,9 @@ gem 'origin'
 gem 'moped'
 CODE
 
-run 'bundle install'
+Bundler.with_clean_env do
+  run 'bundle install'
+end
 
 generate 'mongoid:config'
 
@@ -305,7 +310,9 @@ gem 'redis-objects'
 gem 'redis-namespace'
 CODE
 
-run 'bundle install'
+Bundler.with_clean_env do
+  run 'bundle install'
+end
 
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/redis.rb -P config/initializers/'
 end
