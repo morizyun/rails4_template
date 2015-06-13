@@ -4,15 +4,13 @@
 # clean file
 run 'rm README.rdoc'
 
-# move current dir
-run "cd #{@app_name}"
-
 # .gitignore
 run 'gibo OSX Ruby Rails JetBrains SASS SublimeText > .gitignore' rescue nil
 gsub_file '.gitignore', /^config\/initializers\/secret_token.rb$/, ''
 gsub_file '.gitignore', /config\/secret.yml/, ''
 
 # add to Gemfile
+run 'touch Gemfile'
 append_file 'Gemfile', <<-CODE
 
 # Bootstrap & Bootswatch & font-awesome
