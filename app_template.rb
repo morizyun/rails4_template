@@ -67,6 +67,9 @@ gem 'whenever', require: false
 # Presenter Layer Helper
 gem 'active_decorator'
 
+# Table(Migration) Comment
+gem 'migration_comments'
+
 group :development do
   gem 'html2slim'
 
