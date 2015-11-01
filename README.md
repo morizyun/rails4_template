@@ -21,12 +21,14 @@ I recommend to install gibo before generating Rails project. - [simonwhitaker/gi
 
 ## Execution command
 
-Execute following command for PostgreSQL:
+Execute following command
 
+    gem update rails
+
+    # if you want to use PostgreSQL, please execute following command;
     rails new test_app --database=postgresql --skip-test-unit --skip-bundle -m https://raw.github.com/morizyun/rails4_template/master/app_template.rb
 
-Execute following command for MySQL:
-
+    # if you want to use MySQL, please execute following command;
     rails new test_app --database=mysql --skip-test-unit --skip-bundle -m https://raw.github.com/morizyun/rails4_template/master/app_template.rb
 
 Caution: Please don't use '-' in application name.
