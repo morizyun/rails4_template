@@ -55,9 +55,6 @@ gem 'newrelic_rpm'
 # Airbrake
 gem 'airbrake'
 
-# HTML Parser
-gem 'nokogiri'
-
 # Hash extensions
 gem 'hashie'
 
@@ -96,6 +93,7 @@ group :development, :test do
 
   # Rspec
   gem 'rspec-rails'
+  gem 'spring-commands-rspec'
 
   # test fixture
   gem 'factory_girl_rails'
@@ -235,6 +233,9 @@ run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn/heroku.rb' > Pr
 # ----------------------------------------------------------------
 # Rspec
 generate 'rspec:install'
+
+run 'bundle install --binstubs'
+
 run "echo '--color -f d' > .rspec"
 
 insert_into_file 'spec/spec_helper.rb',%(
