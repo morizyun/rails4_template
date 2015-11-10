@@ -237,7 +237,7 @@ run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn/heroku.rb' > Pr
 # Rspec
 generate 'rspec:install'
 
-run 'spring binstub --all'
+run 'bundle exec spring binstub --all'
 
 run "echo '--color -f d' > .rspec"
 
