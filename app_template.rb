@@ -101,12 +101,6 @@ group :development, :test do
   # test fixture
   gem 'factory_girl_rails'
 
-  # テスト環境のテーブルをきれいにする
-  gem 'database_rewinder'
-
-  # Time Mock
-  gem 'timecop'
-
   # Deploy
   gem 'capistrano', '~> 3.2.1'
   gem 'capistrano-rails'
@@ -119,6 +113,15 @@ group :test do
   # HTTP requests用のモックアップを作ってくれる
   gem 'webmock'
   gem 'vcr'
+
+  # Time Mock
+  gem 'timecop'
+
+  # テスト用データを生成
+  gem 'faker'
+
+  # テスト環境のテーブルをきれいにする
+  gem 'database_rewinder'
 end
 
 group :production, :staging do
