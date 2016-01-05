@@ -52,9 +52,6 @@ gem 'kaminari'
 # NewRelic
 gem 'newrelic_rpm'
 
-# Airbrake
-gem 'airbrake'
-
 # Hash extensions
 gem 'hashie'
 
