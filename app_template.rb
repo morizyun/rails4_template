@@ -102,7 +102,6 @@ group :development, :test do
 
   # Rspec
   gem 'rspec-rails'
-  gem 'spring-commands-rspec'
 
   # test fixture
   gem 'factory_girl_rails'
@@ -252,12 +251,10 @@ run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/
 run 'wget https://raw.github.com/morizyun/rails4_template/master/config/unicorn/staging.rb -P config/unicorn/'
 run "echo 'web: bundle exec unicorn -p $PORT -c ./config/unicorn/heroku.rb' > Procfile"
 
-# Rspec/Spring/Guard
+# Rspec/Guard
 # ----------------------------------------------------------------
 # Rspec
 generate 'rspec:install'
-
-run 'bundle exec spring binstub --all'
 
 run "echo '--color -f d' > .rspec"
 
