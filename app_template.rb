@@ -3,6 +3,9 @@ require 'bundler'
 # アプリ名の取得
 @app_name = app_name
 
+# メールアドレスの取得
+mail_address = ask("What's your current email address?")
+
 # clean file
 run 'rm README.rdoc'
 
@@ -69,6 +72,9 @@ gem 'active_decorator'
 
 # Table(Migration) Comment
 gem 'migration_comments'
+
+# Exception Notifier
+gem 'exception_notification'
 
 group :development do
   gem 'html2slim'
@@ -178,6 +184,17 @@ insert_into_file 'config/environments/development.rb',%(
     Bullet.rails_logger = true # Railsログに出力
   end
 ), after: 'config.assets.debug = true'
+
+# For Bullet (N+1 Problem)
+insert_into_file 'config/environments/development.rb',%(
+  # Exception Notifier
+  Rails.application.config.middleware.use ExceptionNotification::Rack,
+    :email => {
+      :email_prefix => "[#{@app_name}] ",
+      :sender_address => %{"notifier" <#{mail_address}>},
+      :exception_recipients => %w{#{mail_address}}
+    }
+), before: 'end'
 
 # set Japanese locale
 run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
