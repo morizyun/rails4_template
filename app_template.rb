@@ -174,7 +174,7 @@ application  do
 end
 
 # For Bullet (N+1 Problem)
-insert_into_file 'config/environments/development.rb',%(
+insert_into_file 'config/environments/develo.rb',%(
   # Bulletの設定
   config.after_initialize do
     Bullet.enable = true # Bulletプラグインを有効
@@ -185,8 +185,8 @@ insert_into_file 'config/environments/development.rb',%(
   end
 ), after: 'config.assets.debug = true'
 
-# For Bullet (N+1 Problem)
-insert_into_file 'config/environments/development.rb',%(
+# Exception Notifier
+insert_into_file 'config/environments/production.rb',%(
   # Exception Notifier
   Rails.application.config.middleware.use ExceptionNotification::Rack,
     :email => {
@@ -194,7 +194,7 @@ insert_into_file 'config/environments/development.rb',%(
       :sender_address => %{"notifier" <#{mail_address}>},
       :exception_recipients => %w{#{mail_address}}
     }
-), before: 'end'
+), after: 'config.active_record.dump_schema_after_migration = false'
 
 # set Japanese locale
 run 'wget https://raw.github.com/svenfuchs/rails-i18n/master/rails/locale/ja.yml -P config/locales/'
