@@ -174,7 +174,7 @@ application  do
 end
 
 # For Bullet (N+1 Problem)
-insert_into_file 'config/environments/develo.rb',%(
+insert_into_file 'config/environments/development.rb',%(
   # Bulletの設定
   config.after_initialize do
     Bullet.enable = true # Bulletプラグインを有効
