@@ -22,6 +22,9 @@ gem 'font-awesome-rails'
 # turbolinks support
 gem 'jquery-turbolinks'
 
+# sprocket-rails (3.0.0 is not good...)
+gem 'sprockets-rails', '2.3.3'
+
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'therubyracer', platforms: :ruby
 
