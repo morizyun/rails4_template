@@ -61,9 +61,6 @@ gem 'newrelic_rpm'
 # Hash extensions
 gem 'hashie'
 
-# Settings
-gem 'settingslogic'
-
 # Cron Manage
 gem 'whenever', require: false
 
@@ -221,10 +218,6 @@ run 'wheneverize .'
 Bundler.with_clean_env do
   run 'bundle exec cap install'
 end
-
-# Setting Logic
-run 'wget https://raw.github.com/morizyun/rails4_template/master/config/application.yml -P config/'
-run 'wget https://raw.github.com/morizyun/rails4_template/master/config/initializers/settings.rb -P config/initializers/'
 
 # Kaminari config
 generate 'kaminari:config'
